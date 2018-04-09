@@ -2,6 +2,20 @@ alter_table ::= 'ALTER' 'TABLE' table_name ('ADD' ( column_name column_type ) { 
 
 column_type ::= '<type>';
 
+create_index ::= 'CREATE' 'INDEX' [ 'IF' 'NOT' 'EXISTS' ] index_name 'ON' table_name
+                     '(' index_columns ')' \
+                     [ clustering_key_column_ordering ] [ covering_columns ];
+
+index_columns = partition_key_columns [ clustering_key_columns ];
+
+partition_key_columns = ( column_name | '(' column_name { ',' column_name } ')' );
+
+clustering_key_columns = column_name { ',' column_name };
+
+clustering_key_column_ordering = 'WITH' 'CLUSTERING' 'ORDER' 'BY' '(' ( column_name [ ( 'ASC' | 'DESC' ) ] ) {',' ( column_name [ ( 'ASC' | 'DESC' ) ] ) } ')';
+
+covering_columns = 'COVERING' '(' column_name { ',' column_name } ')';
+
 create_keyspace ::= 'CREATE' ( 'KEYSPACE' | 'SCHEMA' ) [ 'IF' 'NOT' 'EXISTS' ] keyspace_name keyspace_properties ;
 
 keyspace_properties ::= [ 'WITH' 'REPLICATION' '=' '{' keyspace_property { ',' keyspace_property } '}' ] [ 'AND' 'DURABLE_WRITES' '=' ( 'true' | 'false' ) ] ;
@@ -56,6 +70,13 @@ update ::= 'UPDATE' table_name
               'WHERE' where_expression
               [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
 
+transaction_block ::= 'BEGIN' 'TRANSACTION' \
+                      ( ( insert | update | delete ) ';' )
+                      { ( insert | update | delete ) ';' } \
+                      'END' 'TRANSACTION' ';' ;
+
+truncate ::= 'TRUNCATE' [ 'TABLE' ] table_name;
+
 assignment ::= column_name '=' expression ; 
 
 ttl_expression ::= '<Integer Literal>' ;
@@ -69,6 +90,8 @@ property_name ::= '<Text Literal>' ;
 property_literal ::= '<Text Literal>' ;
 
 table_name ::= [ keyspace_name '.' ] '<Text Literal>' ;
+
+index_name ::= '<Text Literal>' ;
 
 column_name ::= '<Text Literal>' ;
 
