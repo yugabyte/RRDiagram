@@ -19,9 +19,13 @@ public class GrammarToRRDiagram {
   }
 
   private RuleLinkProvider ruleLinkProvider = new RuleLinkProvider() {
+    private String toLinkName(String name) {
+      return "../grammar_diagrams#" + name.replaceAll("_", "-");
+    }
+
     @Override
     public String getLink(String ruleName) {
-      return "#" + ruleName;
+      return toLinkName(ruleName);
     }
   };
 

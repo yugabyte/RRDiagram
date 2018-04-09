@@ -36,29 +36,24 @@ public class Sequence extends Expression {
     for(int i=0; i<expressions.length; i++) {
       Expression expression = expressions[i];
       RRElement rrElement = expression.toRRElement(grammarToRRDiagram);
-      // Treat special case of: "a (',' a)*" and "a (a)*"
+      // Treat special case of: "e (',' e)*" and "e (e)*"
       if(i < expressions.length - 1 && expressions[i + 1] instanceof Repetition) {
         Repetition repetition = (Repetition)expressions[i + 1];
         Expression repetitionExpression = repetition.getExpression();
-        if(repetitionExpression instanceof Sequence) {
-          // Treat special case of: "expr (',' expr)*"
-          Expression[] subExpressions = ((Sequence)repetitionExpression).getExpressions();
-          if(subExpressions.length == 2 && subExpressions[0] instanceof Literal) {
-            if(expression.equals(subExpressions[1])) {
-              Integer maxRepetitionCount = repetition.getMaxRepetitionCount();
-              if(maxRepetitionCount == null || maxRepetitionCount > 1) {
-                rrElement = new RRLoop(expression.toRRElement(grammarToRRDiagram), subExpressions[0].toRRElement(grammarToRRDiagram), repetition.getMinRepetitionCount(), (maxRepetitionCount == null? null: maxRepetitionCount));
-                i++;
-              }
-            }
+        // Treat special case of: e (e)*
+        if(expression.equals(repetitionExpression)) {
+          Integer maxRepetitionCount = repetition.getMaxRepetitionCount();
+          if(maxRepetitionCount == null || maxRepetitionCount > 1) {
+            rrElement = new RRLoop(expression.toRRElement(grammarToRRDiagram), null, repetition.getMinRepetitionCount(), (maxRepetitionCount == null? null: maxRepetitionCount));
+            i++;
           }
-        } else if(expression instanceof RuleReference) {
-          RuleReference ruleLink = (RuleReference)expression;
-          // Treat special case of: a (a)*
-          if(repetitionExpression instanceof RuleReference && ((RuleReference)repetitionExpression).getRuleName().equals(ruleLink.getRuleName())) {
+        } else if(repetitionExpression instanceof Sequence) {
+          // Treat special case of: a (',' a)*
+          Expression[] subExpressions = ((Sequence)repetitionExpression).getExpressions();
+          if(subExpressions.length == 2 && subExpressions[0] instanceof Literal && subExpressions[1].equals(expression)) {
             Integer maxRepetitionCount = repetition.getMaxRepetitionCount();
             if(maxRepetitionCount == null || maxRepetitionCount > 1) {
-              rrElement = new RRLoop(ruleLink.toRRElement(grammarToRRDiagram), null, repetition.getMinRepetitionCount(), (maxRepetitionCount == null? null: maxRepetitionCount));
+              rrElement = new RRLoop(expression.toRRElement(grammarToRRDiagram), subExpressions[0].toRRElement(grammarToRRDiagram), repetition.getMinRepetitionCount(), (maxRepetitionCount == null? null: maxRepetitionCount));
               i++;
             }
           }

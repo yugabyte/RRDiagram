@@ -28,14 +28,17 @@ public class RRDiagram {
   }
 
   private static final String SVG_ELEMENTS_SEPARATOR = "";//\n";
-  private static final String CSS_CONNECTOR_CLASS = "c";
-  static final String CSS_RULE_CLASS = "r";
-  static final String CSS_RULE_TEXT_CLASS = "i";
-  static final String CSS_LITERAL_CLASS = "l";
-  static final String CSS_LITERAL_TEXT_CLASS = "j";
-  static final String CSS_SPECIAL_SEQUENCE_CLASS = "s";
-  static final String CSS_SPECIAL_SEQUENCE_TEXT_CLASS = "k";
-  static final String CSS_LOOP_CARDINALITIES_TEXT_CLASS = "u";
+  private static final String CSS_CONNECTOR_CLASS = "connector";
+  static final String CSS_RULE_CLASS = "rule";
+  static final String CSS_RULE_TEXT_CLASS = "text";
+  static final String CSS_LITERAL_CLASS = "literal";
+  static final String CSS_LITERAL_TEXT_CLASS = "text";
+  static final String CSS_SPECIAL_SEQUENCE_CLASS = "literal";
+  static final String CSS_SPECIAL_SEQUENCE_TEXT_CLASS = "text";
+  static final String CSS_LOOP_CARDINALITIES_TEXT_CLASS = "text";
+
+  // TODO make this a parameter
+  static final boolean USE_EXTERNAL_CSS = true;
 
   private static abstract class SvgConnector {
   }
@@ -348,9 +351,9 @@ public class RRDiagram {
     String elements = svgContent.getElements();
     // Then generate the rest (CSS and SVG container tags) based on that usage.
     StringBuilder sb = new StringBuilder();
-    sb.append("<svg version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.w3.org/2000/svg\" width=\"").append(width).append("\" height=\"").append(height).append("\" viewbox=\"0 0 ").append(width).append(" ").append(height).append("\">").append(SVG_ELEMENTS_SEPARATOR);
+    sb.append("<svg class=\"rrdiagram\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.w3.org/2000/svg\" width=\"").append(width).append("\" height=\"").append(height).append("\" viewbox=\"0 0 ").append(width).append(" ").append(height).append("\">").append(SVG_ELEMENTS_SEPARATOR);
     String styles = svgContent.getCSSStyles();
-    if(styles.length() > 0) {
+    if(!USE_EXTERNAL_CSS && styles.length() > 0) {
       sb.append("<defs><style type=\"text/css\">").append(SVG_ELEMENTS_SEPARATOR);
       sb.append(styles).append(SVG_ELEMENTS_SEPARATOR);
       sb.append("</style></defs>").append(SVG_ELEMENTS_SEPARATOR);

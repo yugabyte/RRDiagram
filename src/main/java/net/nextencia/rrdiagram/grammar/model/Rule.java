@@ -40,7 +40,7 @@ public class Rule {
     return new RRDiagram(expression.toRRElement(grammarToRRDiagram));
   }
 
-  String toBNF(GrammarToBNF grammarToBNF) {
+  public String toBNF(GrammarToBNF grammarToBNF) {
     StringBuilder sb = new StringBuilder();
     sb.append(name);
     sb.append(" ");

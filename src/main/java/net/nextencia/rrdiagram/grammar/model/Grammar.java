@@ -22,7 +22,7 @@ public class Grammar {
     return rules;
   }
 
-  String toBNF(GrammarToBNF grammarToBNF) {
+  public String toBNF(GrammarToBNF grammarToBNF) {
     StringBuilder sb = new StringBuilder();
     for(int i=0; i<rules.length; i++) {
       if(i > 0) {

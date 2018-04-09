@@ -43,5 +43,4 @@ public class Literal extends Expression {
     }
     return text.equals(((Literal)o).text);
   }
-
 }
