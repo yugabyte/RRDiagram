@@ -1,0 +1,77 @@
+alter_table ::= 'ALTER' 'TABLE' table_name ('ADD' ( column_name column_type ) { ',' ( column_name column_type ) } | 'DROP' ( column_name { ',' column_name } ) | 'RENAME' ( column_name 'TO' column_name ) { ',' ( column_name 'TO' column_name ) }  | 'WITH' ( property_name '=' property_literal ) { 'AND' ( property_name '=' property_literal ) } )+ ;
+
+column_type ::= '<type>';
+
+create_keyspace ::= 'CREATE' ( 'KEYSPACE' | 'SCHEMA' ) [ 'IF' 'NOT' 'EXISTS' ] keyspace_name keyspace_properties ;
+
+keyspace_properties ::= [ 'WITH' 'REPLICATION' '=' '{' keyspace_property { ',' keyspace_property } '}' ] [ 'AND' 'DURABLE_WRITES' '=' ( 'true' | 'false' ) ] ;
+
+keyspace_property ::= property_name '=' property_literal ;
+
+create_table ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ] table_name '(' table_schema ')' [ table_properties ] ;
+
+table_schema ::= ( ( column_name column_type ( 'PRIMARY' 'KEY' | 'STATIC' )+ ) | ( 'PRIMARY' 'KEY' '(' '(' column_name {',' column_name } ')' { ','  column_name } ')' ) ) { ','  ( ( column_name column_type ( 'PRIMARY' 'KEY' | 'STATIC' )+ ) | ( 'PRIMARY' 'KEY' '(' '(' column_name {',' column_name } ')' { ','  column_name } ')' ) ) } ;
+
+table_properties ::= 'WITH' ( property_name = property_literal | 'CLUSTERING' 'ORDER' 'BY' '(' ( column_name [ 'ASC' | 'DESC' ] ) { ',' ( column_name [ 'ASC' | 'DESC' ] ) } ')' | 'COMPACT' 'STORAGE' ) { 'AND' ( property_name = property_literal | 'CLUSTERING' 'ORDER' 'BY' '(' ( column_name [ 'ASC' | 'DESC' ] ) { ',' ( column_name [ 'ASC' | 'DESC' ] ) } ')' | 'COMPACT' 'STORAGE' ) } ;
+
+create_type ::= 'CREATE' 'TYPE' [ 'IF' 'NOT' 'EXISTS' ] type_name
+                    '(' (field_name field_type ) { ',' ( field_name field_type ) } ')' ;
+
+field_type ::= '<type>' ;
+
+drop_keyspace ::= 'DROP' ( 'KEYSPACE' | 'SCHEMA' ) [ 'IF' 'EXISTS' ] keyspace_name ;
+
+drop_table ::= 'DROP' 'TABLE' [ 'IF' 'EXISTS' ] table_name ;
+
+drop_type ::= 'DROP' 'TYPE' [ 'IF' 'EXISTS' ] type_name ;
+
+use_keyspace ::= 'USE' keyspace_name ;
+
+delete ::= 'DELETE' 'FROM' table_name 
+               'WHERE' where_expression 
+               [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
+
+where_expression ::= ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT IN' ) expression ) { 'AND' ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT IN' ) expression ) } ;
+
+if_expression ::= ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT IN' ) expression ) { 'AND' ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT IN' ) expression ) } ;
+
+insert ::= 'INSERT' 'INTO' table_name '(' column_name { ',' column_name } ')'
+               'VALUES' '(' expression { ',' expression } ')' \
+               [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ]
+               [ 'USING' 'TTL' ttl_expression ] ;
+
+expression ::= '<expression>' ;
+
+select ::= 'SELECT' [ 'DISTINCT' ] ( '*' | column_name { ',' column_name } ) 
+               'FROM' table_name \
+               [ 'WHERE' where_expression ]
+               [ 'ORDER BY' order_expression ]
+               [ 'LIMIT' limit_expression ] ;
+
+order_expression ::= '(' ( column_name [ 'ASC' | 'DESC' ] ) { ',' ( column_name [ 'ASC' | 'DESC' ] ) } ')';
+
+update ::= 'UPDATE' table_name
+              [ 'USING' 'TTL' ttl_expression ]
+              'SET' assignment { ',' assignment } \ 
+              'WHERE' where_expression
+              [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
+
+assignment ::= column_name '=' expression ; 
+
+ttl_expression ::= '<Integer Literal>' ;
+
+limit_expression ::= '<Integer Literal>' ;
+
+keyspace_name ::= '<Text Literal>' ;
+
+property_name ::= '<Text Literal>' ;
+
+property_literal ::= '<Text Literal>' ;
+
+table_name ::= [ keyspace_name '.' ] '<Text Literal>' ;
+
+column_name ::= '<Text Literal>' ;
+
+type_name ::= [ keyspace_name '.' ] '<Text Literal>' ;
+
+field_name ::= '<Text Literal>' ;
