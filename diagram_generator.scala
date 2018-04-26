@@ -3,8 +3,8 @@ import net.nextencia.rrdiagram.grammar.rrdiagram._
 
 /**
   * @param inFileName the ebnf file containing the declared grammar
-  *                e.g. "/path/to/RRDiagram/ybsql_grammar.ebnf"
-  * @param outFileName the markdown file where the geenrated diagrams will be written.
+  *                e.g. "/path/to/RRDiagram/yb_cql_grammar.ebnf"
+  * @param outFileName the markdown file where the generated diagrams will be written.
   *                e.g. "path/to/docs/content/api/cassandra/grammar_diagrams_new.md"
   */
 def generate(inFileName : String, outFileName : String) {

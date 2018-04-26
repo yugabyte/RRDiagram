@@ -1,0 +1,41 @@
+create_database ::= 'CREATE' 'DATABASE' database_name ;
+
+create_table ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ] table_name
+                     '(' table_element { ',' table_element } ')' ;
+
+table_element ::= table_column | table_constraints ;
+
+table_column ::= column_name column_type { column_constraint } ;
+
+column_constraint ::= 'PRIMARY' 'KEY' ;
+
+table_constraints ::= 'PRIMARY' 'KEY' '(' column_list ')' ;
+
+column_list ::= column_name { ',' column_name } ;
+
+drop_database ::= 'DROP' 'DATABASE' [ 'IF' 'EXISTS' ] database_name ;
+
+
+drop_table ::= 'DROP' 'TABLE' [ 'IF' 'EXISTS' ] table_name ;
+
+delete ::= 'DELETE' 'FROM' table_name
+               'WHERE' where_expression ;
+
+where_expression = ( column_name ( '<' | '<=' | '=' | '>=' | '>' | 'IN' | 'NOT IN' ) expression ) { 'AND' ( column_name ( '<' | '<=' | '=' | '>=' | '>' | 'IN' | 'NOT IN' ) expression ) } ;
+
+insert ::= 'INSERT' 'INTO' table_name ['(' column { ',' column } ')'] 'VALUES' '(' value { ',' value } ')' ;
+
+select ::= 'SELECT' [ 'DISTINCT' ] ( '*' | column_name { ',' column_name } )
+               'FROM' table_name [ 'WHERE' where_expression ] ;
+
+update ::= 'UPDATE' table_name 'SET' assignment {',' assignment } 'WHERE' where_expression;
+
+assignment ::= ( column_name | column_name'['index_expression']' ) '=' expression ;
+
+database_name = '<Text Literal>' ;
+
+table_name = [ database_name '.' ] '<Text Literal>' ;
+
+column_name = '<Text Literal>' ;
+
+expression = '<expression>' ;
