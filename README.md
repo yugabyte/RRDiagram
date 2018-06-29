@@ -31,6 +31,36 @@ H2_SELECT =
 Usage
 =====
 
+Generate the required diagrams as follows:
+
+1. Build the java code
+
+```bash
+mvn package -DskipTests=true
+```
+
+2. Compile the diagram generator scala program:
+
+```bash
+scalac -cp target/rrdiagram-0.9.4.jar diagram_generator.scala
+```
+
+3. Run the diagram generator:
+
+```bash
+scala -cp target/rrdiagram-0.9.4.jar:. Main yb_cql_grammar.ebnf /tmp/grammar_diagrams.md
+```
+
+4. Update the grammar_diagrams.md file in our docs repository based on changes in the newly
+   generated grammar_diagrams.md. Currently, this needs a bit of manual work in terms of copying the
+   new grammar and svg classes.
+
+5. Some of the newly generated svg classes need to be copied over to various other sections of our
+   documentation.
+
+Internals
+=========
+
 The diagram model represents the actual constructs visible on the diagram.
 To convert a diagram model to SVG:
 ```Java
