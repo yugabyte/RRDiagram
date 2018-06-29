@@ -42,6 +42,7 @@ drop_type ::= 'DROP' 'TYPE' [ 'IF' 'EXISTS' ] type_name ;
 use_keyspace ::= 'USE' keyspace_name ;
 
 delete ::= 'DELETE' 'FROM' table_name 
+               [ 'USING' 'TIMESTAMP' timestamp_expression ]
                'WHERE' where_expression 
                [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
 
@@ -52,7 +53,11 @@ if_expression ::= ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT I
 insert ::= 'INSERT' 'INTO' table_name '(' column_name { ',' column_name } ')'
                'VALUES' '(' expression { ',' expression } ')' \
                [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ]
-               [ 'USING' 'TTL' ttl_expression ] ;
+               [ 'USING' using_expression ] ;
+
+using_expression ::= ( ttl_or_timestamp_expression ) { 'AND' ( ttl_or_timestamp_expression ) } ;
+
+ttl_or_timestamp_expression ::= ( 'TTL' ttl_expression | 'TIMESTAMP' timestamp_expression ) ;
 
 expression ::= '<expression>' ;
 
@@ -66,7 +71,7 @@ select ::= 'SELECT' [ 'DISTINCT' ] ( '*' | column_name { ',' column_name } )
 order_expression ::= '(' ( column_name [ 'ASC' | 'DESC' ] ) { ',' ( column_name [ 'ASC' | 'DESC' ] ) } ')';
 
 update ::= 'UPDATE' table_name
-              [ 'USING' 'TTL' ttl_expression ]
+              [ 'USING' using_expression ]
               'SET' assignment { ',' assignment } \ 
               'WHERE' where_expression
               [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
@@ -81,6 +86,8 @@ truncate ::= 'TRUNCATE' [ 'TABLE' ] table_name;
 assignment ::= column_name '=' expression ; 
 
 ttl_expression ::= '<Integer Literal>' ;
+
+timestamp_expression ::= '<Integer Literal>' ;
 
 limit_expression ::= '<Integer Literal>' ;
 
