@@ -41,9 +41,9 @@ drop_type ::= 'DROP' 'TYPE' [ 'IF' 'EXISTS' ] type_name ;
 
 use_keyspace ::= 'USE' keyspace_name ;
 
-delete ::= 'DELETE' 'FROM' table_name 
+delete ::= 'DELETE' 'FROM' table_name
                [ 'USING' 'TIMESTAMP' timestamp_expression ]
-               'WHERE' where_expression 
+               'WHERE' where_expression
                [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
 
 where_expression ::= ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT IN' ) expression ) { 'AND' ( column_name ( '<' | '<=' | '=' |  '>=' | '>' | 'IN' | 'NOT IN' ) expression ) } ;
@@ -61,7 +61,7 @@ ttl_or_timestamp_expression ::= ( 'TTL' ttl_expression | 'TIMESTAMP' timestamp_e
 
 expression ::= '<expression>' ;
 
-select ::= 'SELECT' [ 'DISTINCT' ] ( '*' | column_name { ',' column_name } ) 
+select ::= 'SELECT' [ 'DISTINCT' ] ( '*' | column_name { ',' column_name } )
                'FROM' table_name \
                [ 'WHERE' where_expression ]
                [ 'ORDER BY' order_expression ]
@@ -72,7 +72,7 @@ order_expression ::= '(' ( column_name [ 'ASC' | 'DESC' ] ) { ',' ( column_name 
 
 update ::= 'UPDATE' table_name
               [ 'USING' using_expression ]
-              'SET' assignment { ',' assignment } \ 
+              'SET' assignment { ',' assignment } \
               'WHERE' where_expression
               [ 'IF' ( [ 'NOT' ] 'EXISTS' | if_expression ) ] ;
 
@@ -83,7 +83,7 @@ transaction_block ::= 'BEGIN' 'TRANSACTION' \
 
 truncate ::= 'TRUNCATE' [ 'TABLE' ] table_name;
 
-assignment ::= column_name '=' expression ; 
+assignment ::= column_name '=' expression ;
 
 ttl_expression ::= '<Integer Literal>' ;
 
@@ -108,3 +108,33 @@ column_name ::= '<Text Literal>' ;
 type_name ::= [ keyspace_name '.' ] '<Text Literal>' ;
 
 field_name ::= '<Text Literal>' ;
+
+alter_role ::= 'ALTER' 'ROLE' role_name  'WITH' ( role_property ) { 'AND' ( role_property ) } ;
+
+create_role ::= 'CREATE' 'ROLE' role_name [ 'WITH' ( role_property ) { 'AND' ( role_property ) } ] ;
+
+role_property ::=  'PASSWORD' '=' '<Text Literal>'
+                   | 'LOGIN' '=' '<Boolean Literal>'
+                   | 'SUPERUSER' '=' '<Boolean Literal>' ;
+
+drop_role ::= 'DROP' 'ROLE' [ 'IF' 'EXISTS' ] role_name ;
+
+grant_role ::=  'GRANT' role_name 'TO' role_name ;
+
+revoke_role ::=  'REVOKE' role_name 'FROM' role_name ;
+
+grant_permission ::=  'GRANT' (all_permissions | permission) 'ON' resource 'TO' role_name ;
+
+revoke_permission ::= 'REVOKE' (all_permissions | permission) 'ON' resource 'FROM' role_name ;
+
+all_permissions ::= 'ALL' [ 'PERMISSIONS' ] ;
+
+role_name ::= '<Text Literal>' ;
+
+permission ::=  ('CREATE' | 'ALTER' | 'DROP' | 'SELECT' | 'MODIFY' | 'AUTHORIZE' | 'DESCRIBE' | 'EXECUTE') [ 'PERMISSION' ] ;
+resource ::=   'ALL' ('KEYSPACES' | 'ROLES')
+             | 'KEYSPACE' keyspace_name
+             | [ 'TABLE' ] table_name
+             | 'ROLE' role_name ;
+
+alter_keyspace ::= 'ALTER' ('KEYSPACE' | 'SCHEMA') keyspae_name keyspace_properties
