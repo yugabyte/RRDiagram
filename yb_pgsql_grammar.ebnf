@@ -5,16 +5,17 @@ create_table ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ] table_name
 
 table_element ::= table_column | table_constraints ;
 
-table_column ::= column_name column_type { column_constraint } ;
+table_column ::= column_name column_type { column_constraint | column_default_value} ;
 
-column_constraint ::= 'PRIMARY' 'KEY' ;
+column_constraint ::= 'PRIMARY' 'KEY' | 'NOT' 'NULL' | 'CHECK' '(' expression ')' ;
+
+column_default_value ::= 'DEFAULT' expression ;
 
 table_constraints ::= 'PRIMARY' 'KEY' '(' column_list ')' ;
 
 column_list ::= column_name { ',' column_name } ;
 
 drop_database ::= 'DROP' 'DATABASE' [ 'IF' 'EXISTS' ] database_name ;
-
 
 drop_table ::= 'DROP' 'TABLE' [ 'IF' 'EXISTS' ] table_name ;
 
