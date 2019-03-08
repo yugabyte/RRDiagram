@@ -53,28 +53,30 @@ copy_option ::=
     | 'HEADER' [ boolean ]
     | 'QUOTE' 'quote_character'
     | 'ESCAPE' 'escape_character'
-    | 'FORCE_QUOTE' ( '(' column_names ')' | * )
+    | 'FORCE_QUOTE' ( '(' column_names ')' | '*' )
     | 'FORCE_NOT_NULL' '(' column_names ')'
     | 'FORCE_NULL' '(' column_names ')'
     | 'ENCODING' 'encoding_name' ) ;
 
 (* 'CREATE' 'DATABASE' *)
-create_database ::= 'CREATE' 'DATABASE' name
-                    [ [ 'WITH' ] [ 'OWNER' [ '=' ] user_name ]
-                    [ 'TEMPLATE' [ '=' ] template ]
-                    [ 'ENCODING' [ '=' ] encoding ]
-                    [ 'LC_COLLATE' [ '=' ] lc_collate ]
-                    [ 'LC_CTYPE' [ '=' ] lc_ctype ]
-                    [ 'TABLESPACE' [ '=' ] tablespace_name ]
-                    [ 'ALLOW_CONNECTIONS' [ '=' ] allowconn ]
-                    [ 'CONNECTION' 'LIMIT' [ '=' ] connlimit ]
-                    [ 'IS_TEMPLATE' [ '=' ] istemplate ] ] ;
+
+create_database ::= 'CREATE' 'DATABASE' name [ create_database_options ] ;
+
+create_database_options ::=  [ 'WITH' ] [ 'OWNER' [ '=' ] user_name ]  \
+                             [ 'TEMPLATE' [ '=' ] template ]  \
+                             [ 'ENCODING' [ '=' ] encoding ]  \
+                             [ 'LC_COLLATE' [ '=' ] lc_collate ]  \
+                             [ 'LC_CTYPE' [ '=' ] lc_ctype ]  \
+                             [ 'TABLESPACE' [ '=' ] tablespace_name ]  \
+                             [ 'ALLOW_CONNECTIONS' [ '=' ] allowconn ]  \
+                             [ 'CONNECTION' 'LIMIT' [ '=' ] connlimit ]  \
+                             [ 'IS_TEMPLATE' [ '=' ] istemplate ] ;
 
 (* 'CREATE' 'INDEX' *)
-create_index ::= 'CREATE' [ 'UNIQUE' ] 'INDEX' [ [ 'IF' 'NOT' 'EXISTS' ] name ] 'ON' [ 'ONLY' ] table_name
-    '(' index_elem { ',' index_elem } ')'
-    [ 'INCLUDE' '(' column_names ')' ]
-    [ 'WHERE' predicate ] ;
+create_index ::= 'CREATE' [ 'UNIQUE' ] 'INDEX' [ [ 'IF' 'NOT' 'EXISTS' ] name ] \
+                          'ON' [ 'ONLY' ] table_name '(' index_elem { ',' index_elem } ')' \
+                          [ 'INCLUDE' '(' column_name { ',' column_name } ')' ] \
+                          [ 'WHERE' predicate ] ;
 
 index_elem ::= ( column_name | '(' expression ')' ) [ opclass ] [ 'ASC' | 'DESC' ] ;
 
@@ -116,8 +118,8 @@ table_constraint ::= [ 'CONSTRAINT' constraint_name ]
                        | 'PRIMARY' 'KEY' '(' column_names ')' index_parameters ) ;
 
 (* 'CREATE' 'TABLE' 'AS' *)
-create_table_as ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ]
-                           table_name [ '(' column_names ')' ]
+create_table_as ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ] \
+                           table_name [ '(' column_name { ',' column_name } ')' ] \
                            'AS' query [ 'WITH' [ 'NO' ] 'DATA' ] ;
 
 (* 'CREATE' 'USER' *)
@@ -130,12 +132,13 @@ create_view ::= 'CREATE' [ 'OR' 'REPLACE' ] 'VIEW' qualified_name [ '(' column_l
 deallocate ::= 'DEALLOCATE' [ 'PREPARE' ] ( name | 'ALL' ) ;
 
 (* 'DELETE' *)
-delete ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ]
-       'DELETE' 'FROM' [ 'ONLY' ] table_name [ '*' ] [ [ 'AS' ] alias ]
-       [ 'WHERE' condition | 'WHERE' 'CURRENT' 'OF' cursor_name ]
+delete ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ] \
+       'DELETE' 'FROM' [ 'ONLY' ] table_name [ '*' ] [ [ 'AS' ] alias ] \
+       [ 'WHERE' condition | 'WHERE' 'CURRENT' 'OF' cursor_name ] \
        [ returning_clause ] ;
 
-returning ::= 'RETURNING' ( '*' | returning_expression { ',' returning_expression } ) ;
+returning ::= 'RETURNING' ( '*' | ( output_expression [ [ 'AS' ] output_name ] )
+                                  { ',' ( output_expression [ [ 'AS' ] output_name ] ) } ) ;
 
 returning_expression ::= output_expression [ [ 'AS' ] output_name ] ;
 
@@ -152,7 +155,7 @@ end_transaction ::= 'END' [ 'TRANSACTION' | 'WORK' ] ;
 execute_statement ::= 'EXECUTE' name [ '(' expression { ',' expression } ')' ] ;
 
 (* 'EXPLAIN' *)
-explain := 'EXPLAIN' [ 'ANALYZE' ] [ 'VERBOSE' ] | '(' option { ',' option } ')' ] statement ;
+explain := 'EXPLAIN' [ ( [ 'ANALYZE' ] [ 'VERBOSE' ] ) | '(' option { ',' option } ')' ] statement ;
 
 option ::= 'ANALYZE' [ boolean ] 
            | 'VERBOSE' [ boolean ] 
@@ -166,19 +169,20 @@ option ::= 'ANALYZE' [ boolean ]
 grant ::= 'GRANT' privileges 'ON' privilege_target 'TO' name { ',' name } [ 'WITH' 'GRANT' 'OPTION' ] ;
 
 (* 'INSERT' *)
-insert ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ]
-           'INSERT' 'INTO' table_name [ 'AS' alias ] [ '(' column_names ')' ]
+
+insert ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ] \
+           'INSERT' 'INTO' table_name [ 'AS' alias ] [ '(' column_names ')' ] \
            ( ( 'DEFAULT' 'VALUES' )
-             | 'VALUES' column_values { ',' column_values }
-             | subquery )
+             | 'VALUES' '(' column_values ')' { ',' '(' column_values ')' }
+             | subquery ) \
            [ returning_clause ] ;
 
-column_values ::= '(' column_value { ',' column_value } ')' ;
-
-column_value ::= expression | 'DEFAULT' ;
+column_values ::= ( expression | 'DEFAULT' ) { ',' ( expression | 'DEFAULT' ) } ;
 
 (* 'LOCK' *)
-lock_table ::= 'LOCK' [ 'TABLE' ] ( table_expr { ',' table_expr } ) [ 'IN' lockmode 'MODE' ] [ 'NOWAIT' ] ;
+lock_table ::= 'LOCK' [ 'TABLE' ]
+                      ( ( [ 'ONLY' ] name [ '*' ] ) { ',' ( [ 'ONLY' ] name [ '*' ] ) } )
+                      [ 'IN' lockmode 'MODE' ] [ 'NOWAIT' ] ;
 
 lockmode ::= ( 'ACCESS' 'SHARE'
                | 'ROW' 'SHARE'
@@ -202,15 +206,16 @@ revoke ::= 'REVOKE' privileges 'ON' privilege_target 'FROM' name { ',' name } [ 
 rollback_transaction ::= 'ROLLBACK' [ 'TRANSACTION' | 'WORK' ] ;
 
 (* 'SELECT' *)
-select ::= [ 'WITH' [ 'RECURSIVE' ] ( with_query { ',' with_query } ) ]
-               'SELECT' [ 'ALL' | 'DISTINCT' [ 'ON' ( '(' expression { ',' expression } ')' ) ] ]
-               [ '*' | ( select_expression { ',' select_expression } ) ]
+select ::= [ 'WITH' [ 'RECURSIVE' ] ( with_query { ',' with_query } ) ] \
+           'SELECT' [ 'ALL' | 'DISTINCT' [ 'ON' ( '(' expression { ',' expression } ')' ) ] ]
+               [ '*' | ( ( expression [ [ 'AS' ] name ] )
+                         { ',' ( expression [ [ 'AS' ] name ] ) } ) ] \
                [ 'FROM' ( from_item { ','  from_item } ) ]
-               [ 'WHERE' condition ]
+               [ 'WHERE' condition ] \
                [ 'GROUP' 'BY' ( grouping_element { ',' grouping_element } ) ]
-               [ 'HAVING' ( condition { ',' condition } ) ]
+               [ 'HAVING' ( condition { ',' condition } ) ] \
                [ ( 'UNION' | 'INTERSECT' | 'EXCEPT' ) [ 'ALL' | 'DISTINCT' ] select ]
-               [ 'ORDER' 'BY' ( order_expr { ',' order_expr } ) ]
+               [ 'ORDER' 'BY' ( order_expr { ',' order_expr } ) ] \
                [ 'LIMIT' [ integer | 'ALL' ] ]
                [ 'OFFSET' integer [ 'ROW' | 'ROWS' ] ] ;
 
@@ -236,21 +241,27 @@ show_stmt ::= 'SHOW' ( name | 'ALL' ) ;
 show_transaction ::= 'SHOW' 'TRANSACTION' 'ISOLATION' 'LEVEL' ;
 
 (* 'TRUNCATE' *)
+(*
 truncate ::= 'TRUNCATE' [ 'TABLE' ] ( table_expr { ',' table_expr } ) ;
+*)
+
+truncate ::= 'TRUNCATE' [ 'TABLE' ]
+             ( ( [ 'ONLY' ] name [ '*' ] ) { ',' ( [ 'ONLY' ] name [ '*' ] ) } ) ;
 
 table_expr ::= [ 'ONLY' ] name [ '*' ] ;
 
 (* 'UPDATE' *)
-update ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ]
-       'UPDATE' [ 'ONLY' ] table_name [ '*' ] [ [ 'AS' ] alias ]
-       'SET' update_item { ',' update_item }
-        [ 'FROM' from_list ]
+update ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ] \
+       'UPDATE' [ 'ONLY' ] table_name [ '*' ] [ [ 'AS' ] alias ] \
+       'SET' update_item { ',' update_item } [ 'FROM' from_list ] \
         [ 'WHERE' condition | 'WHERE' 'CURRENT' 'OF' cursor_name ]
         [ returning_clause ] ;
 
 update_item ::= ( column_name '=' column_value
                   | '(' column_names ')' '=' [ 'ROW' ] '(' column_values ')'
                   | '(' column_names ')' '=' '(' query ')' ) ;
+
+column_value ::= expression | 'DEFAULT' ;
 
 (* Supporting rules *)
 
