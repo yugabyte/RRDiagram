@@ -15,15 +15,29 @@ alter_database ::=
 alter_database_option ::=
   ( 'ALLOW_CONNECTIONS' allowconn | 'CONNECTION' 'LIMIT' connlimit | 'IS_TEMPLATE' istemplate ) ;
 
-(* 'ALTER' 'TABLE' *)
+(* 'ALTER' 'TABLE'
 alter_table ::= 'ALTER' 'TABLE' [ 'IF' 'EXISTS' ] [ 'ONLY' ] name [ '*' ]
                         alter_table_action { ',' alter_table_action } ] ;
 
 alter_table_action ::=
   ( 'ADD' [ 'COLUMN' ] [ 'IF' 'NOT' 'EXISTS' ] column_name data_type
+    | 'RENAME' TO table_name
     | 'DROP' [ 'COLUMN' ] [ 'IF' 'EXISTS' ] column_name [ 'RESTRICT' | 'CASCADE' ]
     | 'ADD' table_constraint
-    | 'DROP' 'CONSTRAINT' [ 'IF' 'EXISTS' ]  constraint_name [ 'RESTRICT' | 'CASCADE' ] ) ;
+    | 'DROP' 'CONSTRAINT' [ 'IF' 'EXISTS' ]  constraint_name [ 'RESTRICT' | 'CASCADE' ]
+    | 'RENAME' [ 'COLUMN' ] column_name TO column_name ) ;
+*)
+
+alter_table ::= 'ALTER' 'TABLE' [ 'ONLY' ] name [ '*' ]
+                        alter_table_action { ',' alter_table_action } ;
+
+alter_table_action ::=
+  ( 'ADD' [ 'COLUMN' ] column_name data_type
+    | 'RENAME' 'TO' table_name
+    | 'DROP' [ 'COLUMN' ] column_name [ 'RESTRICT' | 'CASCADE' ]
+    | 'ADD' table_constraint
+    | 'DROP' 'CONSTRAINT' constraint_name [ 'RESTRICT' | 'CASCADE' ]
+    | 'RENAME' [ 'COLUMN' ] column_name 'TO' column_name ) ;
 
 table_constraint ::=
   [ 'CONSTRAINT' constraint_name ] ( 'CHECK' '(' expression ')' [ 'NO' 'INHERIT' ]
@@ -253,9 +267,10 @@ table_expr ::= [ 'ONLY' ] name [ '*' ] ;
 (* 'UPDATE' *)
 update ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ] \
        'UPDATE' [ 'ONLY' ] table_name [ '*' ] [ [ 'AS' ] alias ] \
-       'SET' update_item { ',' update_item } [ 'FROM' from_list ] \
-        [ 'WHERE' condition | 'WHERE' 'CURRENT' 'OF' cursor_name ]
-        [ returning_clause ] ;
+       'SET' update_item { ',' update_item }
+       (* [ 'FROM' from_list ] \ *)
+       [ 'WHERE' condition | 'WHERE' 'CURRENT' 'OF' cursor_name ] \
+       [ returning_clause ] ;
 
 update_item ::= ( column_name '=' column_value
                   | '(' column_names ')' '=' [ 'ROW' ] '(' column_values ')'
