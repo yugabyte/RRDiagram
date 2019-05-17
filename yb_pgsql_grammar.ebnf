@@ -40,8 +40,7 @@ alter_table_action ::=
     | 'RENAME' [ 'COLUMN' ] column_name 'TO' column_name ) ;
 
 table_constraint ::=
-  [ 'CONSTRAINT' constraint_name ] ( 'CHECK' '(' expression ')' [ 'NO' 'INHERIT' ]
-                                     | 'PRIMARY' 'KEY' '(' column_names ')' index_parameters ) ;
+  [ 'CONSTRAINT' constraint_name ] 'CHECK' '(' expression ')' [ 'NO' 'INHERIT' ] ;
 
 (* 'BEGIN' *)
 begin_transaction ::= 'BEGIN' [ 'TRANSACTION' | 'WORK' ] ;
@@ -151,8 +150,8 @@ delete ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ] \
        [ 'WHERE' condition | 'WHERE' 'CURRENT' 'OF' cursor_name ] \
        [ returning_clause ] ;
 
-returning ::= 'RETURNING' ( '*' | ( output_expression [ [ 'AS' ] output_name ] )
-                                  { ',' ( output_expression [ [ 'AS' ] output_name ] ) } ) ;
+returning_clause ::= 'RETURNING' ( '*' | ( output_expression [ [ 'AS' ] output_name ] )
+                                         { ',' ( output_expression [ [ 'AS' ] output_name ] ) } ) ;
 
 returning_expression ::= output_expression [ [ 'AS' ] output_name ] ;
 
@@ -246,7 +245,12 @@ set ::= 'SET' [ 'SESSION' | 'LOCAL' ]
 set_constraints ::= 'SET' 'CONSTRAINTS' ( 'ALL' | name { ',' name } ) ( 'DEFERRED' | 'IMMEDIATE' ) ;
 
 (* 'SET' 'TRANSACTION' *)
-set_transaction ::= 'SET' 'TRANSACTION' 'ISOLATION' 'LEVEL' ( 'READ' 'UNCOMMITTED' | 'READ' 'COMMITTED' | 'REPEATABLE' 'READ' ) ;
+set_transaction ::= 'SET' 'TRANSACTION' ( 'ISOLATION' 'LEVEL' ( 'READ' 'UNCOMMITTED'
+                                                              | 'READ' 'COMMITTED'
+                                                              | 'REPEATABLE' 'READ'
+                                                              | 'SERIALIZABLE' )
+                                          | 'READ' 'ONLY'
+                                          | 'READ' 'WRITE' ) ;
 
 (* 'SHOW' variable *)
 show_stmt ::= 'SHOW' ( name | 'ALL' ) ;
