@@ -23,7 +23,7 @@ alter_table_action ::=
   ( 'ADD' [ 'COLUMN' ] [ 'IF' 'NOT' 'EXISTS' ] column_name data_type
     | 'RENAME' TO table_name
     | 'DROP' [ 'COLUMN' ] [ 'IF' 'EXISTS' ] column_name [ 'RESTRICT' | 'CASCADE' ]
-    | 'ADD' table_constraint
+    | 'ADD' alter_table_constraint
     | 'DROP' 'CONSTRAINT' [ 'IF' 'EXISTS' ]  constraint_name [ 'RESTRICT' | 'CASCADE' ]
     | 'RENAME' [ 'COLUMN' ] column_name TO column_name ) ;
 *)
@@ -35,12 +35,13 @@ alter_table_action ::=
   ( 'ADD' [ 'COLUMN' ] column_name data_type
     | 'RENAME' 'TO' table_name
     | 'DROP' [ 'COLUMN' ] column_name [ 'RESTRICT' | 'CASCADE' ]
-    | 'ADD' table_constraint
+    | 'ADD' alter_table_constraint
     | 'DROP' 'CONSTRAINT' constraint_name [ 'RESTRICT' | 'CASCADE' ]
     | 'RENAME' [ 'COLUMN' ] column_name 'TO' column_name ) ;
 
-table_constraint ::=
-  [ 'CONSTRAINT' constraint_name ] 'CHECK' '(' expression ')' [ 'NO' 'INHERIT' ] ;
+alter_table_constraint ::= [ 'CONSTRAINT' constraint_name ] ( 
+                       'CHECK' '(' expression ')' | 
+                       'FOREIGN' 'KEY' '(' column_names ')' references_clause ) ;
 
 (* 'BEGIN' *)
 begin_transaction ::= 'BEGIN' [ 'TRANSACTION' | 'WORK' ] ;
@@ -122,13 +123,22 @@ table_elem ::= ( column_name data_type [ column_constraint { column_constraint }
 column_constraint ::= [ 'CONSTRAINT' constraint_name ]
                       (  'NOT' 'NULL'
                          | 'NULL'
-                         | 'CHECK' '(' expression ')' [ 'NO' 'INHERIT' ]
-                         | 'DEFAULT' default_expr
-                         | 'PRIMARY' 'KEY' index_parameters ) ;
+                         | 'CHECK' '(' expression ')'
+                         | 'DEFAULT' expression
+                         | 'PRIMARY' 'KEY' |
+                         | references_clause ) ;
 
 table_constraint ::= [ 'CONSTRAINT' constraint_name ]
-                     ( 'CHECK' '(' expression ')' [ 'NO' 'INHERIT' ]
-                       | 'PRIMARY' 'KEY' '(' column_names ')' index_parameters ) ;
+                     ( 'CHECK' '(' expression ')'
+                       | 'PRIMARY' 'KEY' '(' column_names ')' 
+                       | 'FOREIGN' 'KEY' '(' column_names ')' references_clause ) ;
+
+references_clause ::= 'REFERENCES' table_name [ ( column_name { ',' column_name } ) ] 
+                      [ 'MATCH' 'FULL' | 'MATCH' 'PARTIAL' | 'MATCH' 'SIMPLE' ] \
+                      [ 'ON' 'DELETE' key_action ] [ 'ON' 'UPDATE' key_action ] ;
+
+key_action ::= 'NO' 'ACTION' | 'RESTRICT' | 'CASCADE' | 'SET' 'NULL' | 'SET' 'DEFAULT' ;
+
 
 (* 'CREATE' 'TABLE' 'AS' *)
 create_table_as ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ] \
