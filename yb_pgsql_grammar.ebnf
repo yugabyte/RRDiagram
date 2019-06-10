@@ -180,12 +180,12 @@ execute_statement ::= 'EXECUTE' name [ '(' expression { ',' expression } ')' ] ;
 (* 'EXPLAIN' *)
 explain := 'EXPLAIN' [ ( [ 'ANALYZE' ] [ 'VERBOSE' ] ) | '(' option { ',' option } ')' ] statement ;
 
-option ::= 'ANALYZE' [ boolean ] 
-           | 'VERBOSE' [ boolean ] 
-           | 'COSTS' [ boolean ] 
-           | 'BUFFERS' [ boolean ] 
-           | 'TIMING' [ boolean ] 
-           | 'SUMMARY' [ boolean ] 
+option ::= 'ANALYZE' [ boolean ]
+           | 'VERBOSE' [ boolean ]
+           | 'COSTS' [ boolean ]
+           | 'BUFFERS' [ boolean ]
+           | 'TIMING' [ boolean ]
+           | 'SUMMARY' [ boolean ]
            | 'FORMAT' ( 'TEXT' | 'XML' | 'JSON' | 'YAML' ) ;
 
 (* 'GRANT' *)
@@ -195,12 +195,19 @@ grant ::= 'GRANT' privileges 'ON' privilege_target 'TO' name { ',' name } [ 'WIT
 
 insert ::= [ 'WITH' [ 'RECURSIVE' ] with_query { ',' with_query } ] \
            'INSERT' 'INTO' table_name [ 'AS' alias ] [ '(' column_names ')' ] \
-           ( ( 'DEFAULT' 'VALUES' )
-             | 'VALUES' '(' column_values ')' { ',' '(' column_values ')' }
-             | subquery ) \
-           [ returning_clause ] ;
+               ( ( 'DEFAULT' 'VALUES' )
+               | 'VALUES' '(' column_values ')' { ',' '(' column_values ')' }
+               | subquery ) \
+               [ 'ON' 'CONFLICT' [ conflict_target ] conflict_action ] \
+               [ returning_clause ] ;
 
 column_values ::= ( expression | 'DEFAULT' ) { ',' ( expression | 'DEFAULT' ) } ;
+
+
+conflict_target ::= '(' ( column_name | expression ) { ',' ( column_name | expression ) } ')'  [ 'WHERE' condition ] | 'ON' 'CONSTRAINT' constraint_name ;
+
+conflict_action ::= 'DO' 'NOTHING' | 'DO' 'UPDATE' 'SET' update_item { ',' update_item } [ 'WHERE' condition ] ;
+
 
 (* 'LOCK' *)
 lock_table ::= 'LOCK' [ 'TABLE' ]
