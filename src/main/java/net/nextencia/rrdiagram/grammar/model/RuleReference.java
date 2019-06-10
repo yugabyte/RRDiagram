@@ -7,11 +7,15 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
+import net.nextencia.rrdiagram.common.Utils;
 import net.nextencia.rrdiagram.grammar.model.GrammarToRRDiagram.RuleLinkProvider;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRBreak;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText.Type;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Christopher Deckers
@@ -45,6 +49,24 @@ public class RuleReference extends Expression {
     if(ruleConsideredAsLineBreak != null && ruleConsideredAsLineBreak.equals(ruleName)) {
       sb.append("\n");
     }
+  }
+
+  @Override
+  public void toYBNF(StringBuilder sb, boolean isNested) {
+    if(ruleName.equals(Utils.lineBreakRule)) {
+      sb.append("\n");
+    } else {
+      sb.append(ruleName);
+    }
+  }
+
+  @Override
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    Set<String> refs = new HashSet<String>();
+    if (!rules.contains(ruleName)) {
+      refs.add(ruleName);
+    }
+    return refs;
   }
 
   @Override

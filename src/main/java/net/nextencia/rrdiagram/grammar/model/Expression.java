@@ -9,6 +9,8 @@ package net.nextencia.rrdiagram.grammar.model;
 
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 
+import java.util.Set;
+
 /**
  * @author Christopher Deckers
  */
@@ -17,6 +19,10 @@ public abstract class Expression {
   protected abstract RRElement toRRElement(GrammarToRRDiagram grammarToRRDiagram);
 
   protected abstract void toBNF(GrammarToBNF grammarToBNF, StringBuilder sb, boolean isNested);
+
+  public abstract void toYBNF(StringBuilder sb, boolean isNested);
+
+  public abstract Set<String> getUndefinedRuleRefs(Set<String> rules);
 
   @Override
   public String toString() {

@@ -7,6 +7,8 @@
  */
 package net.nextencia.rrdiagram.common;
 
+import net.nextencia.rrdiagram.grammar.model.Expression;
+
 import java.awt.Color;
 import java.awt.Font;
 
@@ -79,5 +81,40 @@ public class Utils {
     sb.append("font-size:" + font.getSize() + "px;");
     return sb.toString();
   }
+
+
+  public static void exprListToYBNF(StringBuilder sb,
+                                    java.util.List<Expression> exprs,
+                                    String start,
+                                    String sep,
+                                    String end) {
+    sb.append(start);
+    for (int i = 0; i < exprs.size(); i++) {
+      if (i > 0) {
+        sb.append(sep);
+      }
+      exprs.get(i).toYBNF(sb,false);
+    }
+    sb.append(end);
+  }
+
+  public static void exprRepToYBNF(StringBuilder sb,
+                                    Expression expr,
+                                    int repCount,
+                                    String start,
+                                    String sep,
+                                    String end) {
+    sb.append(start);
+    for (int i = 0; i < repCount; i++) {
+      if (i > 0) {
+        sb.append(sep);
+      }
+      expr.toYBNF(sb,false);
+    }
+    sb.append(end);
+  }
+
+  // "Rule" considered as line-break in YBNF grammar.
+  public static String lineBreakRule = "\\";
 
 }

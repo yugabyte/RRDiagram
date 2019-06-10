@@ -12,6 +12,9 @@ import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText.Type;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Christopher Deckers
  */
@@ -34,6 +37,24 @@ public class Literal extends Expression {
     sb.append(c);
     sb.append(text);
     sb.append(c);
+  }
+
+  @Override
+  public void toYBNF(StringBuilder sb, boolean isNested) {
+    // In YBNF uppercase implies literals (e.g. SELECT, INSERT, etc).
+    boolean needs_quote = !text.equals(text.toUpperCase());
+    if (needs_quote) {
+      sb.append('\'');
+    }
+    sb.append(text);
+    if (needs_quote) {
+      sb.append('\'');
+    }
+  }
+
+  @Override
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    return new HashSet<String>();
   }
 
   @Override

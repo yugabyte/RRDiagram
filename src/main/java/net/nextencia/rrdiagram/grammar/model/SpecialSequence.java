@@ -11,6 +11,9 @@ import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText.Type;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Christopher Deckers
  */
@@ -32,6 +35,16 @@ public class SpecialSequence extends Expression {
     sb.append("(? ");
     sb.append(text);
     sb.append(" ?)");
+  }
+
+  @Override
+  public void toYBNF(StringBuilder sb, boolean isNested) {
+    throw new UnsupportedOperationException("Special sequences not supported in YBNF");
+  }
+
+  @Override
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    return new HashSet<String>();
   }
 
   @Override

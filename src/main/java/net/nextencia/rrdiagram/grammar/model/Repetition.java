@@ -7,10 +7,15 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
+import net.nextencia.rrdiagram.common.Utils;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRChoice;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRLine;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRLoop;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Christopher Deckers
@@ -130,6 +135,26 @@ public class Repetition extends Expression {
         }
       }
     }
+  }
+
+  @Override
+  public void toYBNF(StringBuilder sb, boolean isNested) {
+    toYBNF(sb, isNested, null);
+  }
+
+  public void toYBNF(StringBuilder sb, boolean isNested, Expression previousExpr) {
+    Utils.exprRepToYBNF(sb, expression, minRepetitionCount, "", " ", "");
+
+    if (maxRepetitionCount == null) {
+      Utils.exprRepToYBNF(sb, expression, 1, "[ ", "", " ...]");
+    } else {
+      Utils.exprRepToYBNF(sb, expression, maxRepetitionCount - minRepetitionCount, "[ ", " ] [ ", " ]");
+    }
+  }
+
+  @Override
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    return expression.getUndefinedRuleRefs(rules);
   }
 
   @Override

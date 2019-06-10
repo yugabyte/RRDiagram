@@ -7,10 +7,15 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import net.nextencia.rrdiagram.common.Utils;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRLoop;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRSequence;
@@ -86,6 +91,29 @@ public class Sequence extends Expression {
     if(isNested && expressions.length > 1) {
       sb.append(" )");
     }
+  }
+
+  @Override
+  public void toYBNF(StringBuilder sb, boolean isNested) {
+    if(expressions.length == 0) {
+      sb.append("( )");
+      return;
+    }
+    List<Expression> expressionList = Arrays.asList(expressions);
+    if(isNested) {
+      Utils.exprListToYBNF(sb, expressionList, "( "," "," )");
+    } else {
+      Utils.exprListToYBNF(sb, expressionList, ""," ","");
+    }
+  }
+
+  @Override
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    Set<String> refs = new HashSet<String>();
+    for (Expression expression : expressions) {
+      refs.addAll(expression.getUndefinedRuleRefs(rules));
+    }
+    return refs;
   }
 
   @Override

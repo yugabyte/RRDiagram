@@ -9,6 +9,8 @@ package net.nextencia.rrdiagram.grammar.model;
 
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRDiagram;
 
+import java.util.Set;
+
 /**
  * @author Christopher Deckers
  */
@@ -53,6 +55,18 @@ public class Rule {
     expression.toBNF(grammarToBNF, sb, false);
     sb.append(";");
     return sb.toString();
+  }
+
+  public String toYBNF() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(name);
+    sb.append(" ::= ");
+    expression.toYBNF(sb, false);
+    return sb.toString();
+  }
+
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    return expression.getUndefinedRuleRefs(rules);
   }
 
   @Override

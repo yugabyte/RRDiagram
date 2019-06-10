@@ -9,8 +9,11 @@ package net.nextencia.rrdiagram.grammar.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import net.nextencia.rrdiagram.common.Utils;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRChoice;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 
@@ -83,6 +86,41 @@ public class Choice extends Expression {
         }
       }
     }
+  }
+
+  @Override
+  public void toYBNF(StringBuilder sb, boolean isNested) {
+    List<Expression> expressionList = new ArrayList<Expression>();
+    boolean hasNoop = false;
+    for(Expression expression: expressions) {
+      if(expression instanceof Sequence && ((Sequence)expression).getExpressions().length == 0) {
+        hasNoop = true;
+      } else {
+        expressionList.add(expression);
+      }
+    }
+
+    if (hasNoop) {
+      // This is an optional choice: e.g. "[ e1 | e2 | e2 ]"
+      Utils.exprListToYBNF(sb, expressionList, "[ ", " | ", " ]");
+    } else {
+      if (isNested && expressionList.size() > 1) {
+        // Needs nesting: e.g. "( e1 | e2 | e2 )"
+        Utils.exprListToYBNF(sb, expressionList, "( ", " | ", " )");
+      } else {
+        // Regular case: "e1 | e2 | e2"
+        Utils.exprListToYBNF(sb, expressionList, "", " | ", "");
+      }
+    }
+  }
+
+  @Override
+  public Set<String> getUndefinedRuleRefs(Set<String> rules) {
+    Set<String> refs = new HashSet<String>();
+    for (Expression expression: expressions) {
+      refs.addAll(expression.getUndefinedRuleRefs(rules));
+    }
+    return refs;
   }
 
   @Override
