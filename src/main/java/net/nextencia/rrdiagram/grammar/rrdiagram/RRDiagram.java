@@ -301,6 +301,8 @@ public class RRDiagram {
 
   String toSVG(RRDiagramToSVG rrDiagramToSVG) {
     List<RRElement> rrElementList = new ArrayList<RRElement>();
+
+    // Split elements into "lines" (for each Break element encountered -- if any).
     if(rrElement instanceof RRSequence) {
       List<RRElement> cursorElementList = new ArrayList<RRElement>();
       for(RRElement element: ((RRSequence)rrElement).getRRElements()) {
@@ -319,6 +321,8 @@ public class RRDiagram {
     } else {
       rrElementList.add(rrElement);
     }
+
+    // Compute diagram size.
     int width = 5;
     int height = 5;
     for (int i = 0; i < rrElementList.size(); i++) {
@@ -328,23 +332,34 @@ public class RRDiagram {
       RRElement rrElement = rrElementList.get(i);
       rrElement.computeLayoutInfo(rrDiagramToSVG);
       LayoutInfo layoutInfo = rrElement.getLayoutInfo();
-      width = Math.max(width, 5 + layoutInfo.getWidth() + 5);
+      width = Math.max(width, 15 + layoutInfo.getWidth() + 15);
       height += layoutInfo.getHeight() + 5;
     }
     SvgContent svgContent = new SvgContent();
     // First, generate the XML for the elements, to know the usage.
     int xOffset = 0;
     int yOffset = 5;
-    for(RRElement rrElement: rrElementList) {
+
+    // Generate diagram.
+    for(int i = 0; i < rrElementList.size(); i++) {
+      RRElement rrElement = rrElementList.get(i);
       LayoutInfo layoutInfo2 = rrElement.getLayoutInfo();
       int connectorOffset2 = layoutInfo2.getConnectorOffset();
       int width2 = layoutInfo2.getWidth();
       int height2 = layoutInfo2.getHeight();
-      int y1 = yOffset + connectorOffset2;
-      svgContent.addLineConnector(xOffset, y1, xOffset + 5, y1);
-      // TODO: add decorations (like arrows)?
-      rrElement.toSVG(rrDiagramToSVG, xOffset + 5, yOffset, svgContent);
-      svgContent.addLineConnector(xOffset + 5 + width2, y1, xOffset + 5 + width2 + 5, y1);
+      int yPos = yOffset + connectorOffset2;
+      int xPos = xOffset;
+      // Add start decoration.
+      xPos += addLineStartMarker(svgContent, xOffset, yPos, i == 0);
+
+      // Add content.
+      rrElement.toSVG(rrDiagramToSVG, xPos, yOffset, svgContent);
+      xPos += width2;
+
+      // Add end decoration.
+      xPos += addLineEndMarker(svgContent, xPos, yPos, i == rrElementList.size() - 1);
+
+      // Prepare offset for next line (if any).
       yOffset += height2 + 10;
     }
     String connectorElement = svgContent.getConnectorElement(rrDiagramToSVG);
@@ -362,6 +377,31 @@ public class RRDiagram {
     sb.append(elements);
     sb.append("</svg>");
     return sb.toString();
+  }
+
+  private int addLineStartMarker(SvgContent svgContent, int x, int y, boolean isFirst) {
+    if (isFirst) {
+      svgContent.addElement("<polygon points=\"" + x + "," + (y + 7) + " " + (x + 5) + "," + y + " " + x + "," + (y - 7) + "\" style=\"fill:black;stroke-width:0\"/>");
+      svgContent.addLineConnector(x, y, x + 15, y);
+    } else {
+      svgContent.addLineConnector(x, y, x + 2, y);
+      svgContent.addLineConnector(x + 4, y, x + 6, y);
+      svgContent.addLineConnector(x + 8, y, x + 15, y);
+    }
+    return 15; // width.
+  }
+
+  private int addLineEndMarker(SvgContent svgContent, int x, int y, boolean isLast) {
+    if (isLast) {
+      svgContent.addLineConnector(x, y, x + 15, y);
+      x = x + 11;
+      svgContent.addElement("<polygon points=\"" + x + "," + (y + 7) + " " + (x + 4) + "," + (y + 7) + " " + (x + 4) + "," + (y - 7) + " " + x + "," + (y - 7) + "\" style=\"fill:black;stroke-width:0\"/>");
+    } else {
+      svgContent.addLineConnector(x, y, x + 7, y);
+      svgContent.addLineConnector(x + 9, y, x + 11, y);
+      svgContent.addLineConnector(x + 13, y, x + 15, y);
+    }
+    return 15; // width.
   }
 
 }
