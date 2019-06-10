@@ -16,6 +16,7 @@ import net.nextencia.rrdiagram.grammar.rrdiagram.RRLoop;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 /**
  * @author Christopher Deckers
@@ -25,6 +26,9 @@ public class Repetition extends Expression {
   private Expression expression;
   private int minRepetitionCount;
   private Integer maxRepetitionCount;
+
+  // Previous expression if within a sequence -- set&used when generating YBNF.
+  private Expression prevExpression = null;
 
   public Repetition(Expression expression, int minRepetitionCount, Integer maxRepetitionCount) {
     this.expression = expression;
@@ -138,17 +142,38 @@ public class Repetition extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isNested) {
-    toYBNF(sb, isNested, null);
-  }
+  public void toYBNF(StringBuilder sb, boolean isWrapped) {
 
-  public void toYBNF(StringBuilder sb, boolean isNested, Expression previousExpr) {
-    Utils.exprRepToYBNF(sb, expression, minRepetitionCount, "", " ", "");
+    if (minRepetitionCount > 0) {
+      // e.g.: 'expr expr expr'
+      prevExpression = expression;
+      Utils.exprRepToYBNF(sb, expression, minRepetitionCount, "", " ", "", false);
+      if (maxRepetitionCount != null && maxRepetitionCount == minRepetitionCount) {
+        return; // We are done.
+      }
+      // Otherwise we still have things to process so write a separator.
+      sb.append(" ");
+    }
 
-    if (maxRepetitionCount == null) {
-      Utils.exprRepToYBNF(sb, expression, 1, "[ ", "", " ...]");
+    if (maxRepetitionCount != null) {
+      // e.g. (including min reps): 'expr expr expr [ expr ] [ expr ] [ expr ]'
+      Utils.exprRepToYBNF(sb, expression, maxRepetitionCount - minRepetitionCount, "[ ", " ] [ ", " ]", true);
     } else {
-      Utils.exprRepToYBNF(sb, expression, maxRepetitionCount - minRepetitionCount, "[ ", " ] [ ", " ]");
+      if (expression.equals(prevExpression)) {
+        // e.g. 'expr [ ... ]'
+        sb.append("[ ... ]");
+
+      } else if (expression instanceof Sequence &&
+          ((Sequence) expression).getLastExpression().equals(prevExpression)) {
+        // e.g. expr [ ,  ... ]
+        List<Expression> exprs = Arrays.asList(((Sequence) expression).getExpressions());
+        Utils.exprListToYBNF(sb, exprs.subList(0, exprs.size() - 1), "[ ", "", " ... ]", true);
+      } else {
+        // Must simulate previous element by wrapping in an optional: e.g. '[ expr [ ... ] ]'
+        sb.append("[ ");
+        expression.toYBNF(sb, true);
+        sb.append(" [ ... ] ]");
+      }
     }
   }
 
@@ -164,6 +189,10 @@ public class Repetition extends Expression {
     }
     Repetition exp2 = (Repetition)o;
     return expression.equals(exp2.expression) && minRepetitionCount == exp2.minRepetitionCount && maxRepetitionCount == null? exp2.maxRepetitionCount == null: maxRepetitionCount.equals(exp2.maxRepetitionCount);
+  }
+
+  public void setPrevExpression(Expression prev) {
+    prevExpression = prev;
   }
 
 }

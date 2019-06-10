@@ -7,13 +7,11 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.nextencia.rrdiagram.common.Utils;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
@@ -33,6 +31,10 @@ public class Sequence extends Expression {
 
   public Expression[] getExpressions() {
     return expressions;
+  }
+
+  public Expression getLastExpression() {
+    return expressions[expressions.length - 1];
   }
 
   @Override
@@ -94,16 +96,26 @@ public class Sequence extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isNested) {
+  public void toYBNF(StringBuilder sb, boolean isWrapped) {
     if(expressions.length == 0) {
-      sb.append("( )");
+      sb.append("{ }");
       return;
     }
+
     List<Expression> expressionList = Arrays.asList(expressions);
-    if(isNested) {
-      Utils.exprListToYBNF(sb, expressionList, "( "," "," )");
+
+    // Set previous expression for repetitions so it can generate the '...' correctly.
+    for (int i = 1; i < expressionList.size(); i++) {
+      Expression expr = expressionList.get(i);
+      if (expr instanceof Repetition) {
+        ((Repetition) expr).setPrevExpression(expressionList.get(i - 1));
+      }
+    }
+
+    if(!isWrapped) {
+      Utils.exprListToYBNF(sb, expressionList, "{ "," "," }", true);
     } else {
-      Utils.exprListToYBNF(sb, expressionList, ""," ","");
+      Utils.exprListToYBNF(sb, expressionList, ""," ","", true);
     }
   }
 

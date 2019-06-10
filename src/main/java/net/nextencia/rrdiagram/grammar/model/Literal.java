@@ -40,7 +40,7 @@ public class Literal extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isNested) {
+  public void toYBNF(StringBuilder sb, boolean isWrapped) {
     // In YBNF uppercase implies literals (e.g. SELECT, INSERT, etc).
     boolean needs_quote = !text.equals(text.toUpperCase());
     if (needs_quote) {
@@ -50,6 +50,10 @@ public class Literal extends Expression {
     if (needs_quote) {
       sb.append('\'');
     }
+  }
+
+  public String getText() {
+    return text;
   }
 
   @Override

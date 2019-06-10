@@ -26,6 +26,7 @@ public class Main {
     FileReader in = new java.io.FileReader(inFileName);
     BNFToGrammar btg = new BNFToGrammar();
     Grammar grammar = btg.convert(in);
+    GrammarToBNF bnf_builder = new GrammarToBNF();
 
     GrammarToRRDiagram.RuleLinkProvider ruleLinkProvider =
         new GrammarToRRDiagram.RuleLinkProvider() {
@@ -43,28 +44,32 @@ public class Main {
     checkGrammar(grammar);
 
     for (Rule rule : grammar.getRules()) {
-      pw.write("### " + rule.getName() + "\n");
+      try {
+        pw.write("### " + rule.getName() + "\n");
 
-      /*
-        // Debug mode.
-        GrammarToBNF bnf_builder = new GrammarToBNF();
+        /*
+          // Debug mode.
+          pw.write("```\n");
+          pw.write(rule.toBNF(bnf_builder));
+          pw.write("\n```\n");
+        */
+
         pw.write("```\n");
-        pw.write(rule.toBNF(bnf_builder));
+        pw.write(rule.toYBNF());
         pw.write("\n```\n");
-      */
+        GrammarToRRDiagram diagram_builder = new GrammarToRRDiagram();
+        diagram_builder.setRuleLinkProvider(ruleLinkProvider);
+        diagram_builder.setRuleConsideredAsLineBreak(Utils.lineBreakRule);
 
-      pw.write("```\n");
-      pw.write(rule.toYBNF());
-      pw.write("\n```\n");
-
-      GrammarToRRDiagram diagram_builder = new GrammarToRRDiagram();
-      diagram_builder.setRuleLinkProvider(ruleLinkProvider);
-      diagram_builder.setRuleConsideredAsLineBreak(Utils.lineBreakRule);
-
-      RRDiagram diagram = diagram_builder.convert(rule);
-      String svg_string = new RRDiagramToSVG().convert(diagram);
-      pw.write(svg_string);
-      pw.write("\n\n");
+        RRDiagram diagram = diagram_builder.convert(rule);
+        String svg_string = new RRDiagramToSVG().convert(diagram);
+        pw.write(svg_string);
+        pw.write("\n\n");
+      } catch (Exception e) {
+        logWarn("Exception occurred while exporting rule " + rule.getName());
+        logWarn(rule.toBNF(bnf_builder));
+        throw e;
+      }
     }
 
     pw.close();

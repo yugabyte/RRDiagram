@@ -61,7 +61,7 @@ public class Rule {
     StringBuilder sb = new StringBuilder();
     sb.append(name);
     sb.append(" ::= ");
-    expression.toYBNF(sb, false);
+    expression.toYBNF(sb, true);
     return sb.toString();
   }
 

@@ -8,6 +8,7 @@
 package net.nextencia.rrdiagram.common;
 
 import net.nextencia.rrdiagram.grammar.model.Expression;
+import net.nextencia.rrdiagram.grammar.model.Literal;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -83,17 +84,36 @@ public class Utils {
   }
 
 
+  private static boolean emptySep(String sep) {
+    return sep.trim().isEmpty();
+  }
+
   public static void exprListToYBNF(StringBuilder sb,
                                     java.util.List<Expression> exprs,
                                     String start,
                                     String sep,
-                                    String end) {
+                                    String end,
+                                    boolean isWrapped) {
     sb.append(start);
     for (int i = 0; i < exprs.size(); i++) {
       if (i > 0) {
         sb.append(sep);
       }
-      exprs.get(i).toYBNF(sb,false);
+
+      /* Already wrapped if surrounding separators are non-empty */
+      boolean isElemWrapped = !emptySep(sep) &&
+                          (i > 0  || isWrapped || !emptySep(start)) &&
+                          (i < exprs.size() - 1  || isWrapped || !emptySep(end));
+
+      /* Additionally, for inner elems, check if surrounding elems are parenthesis */
+      if (!isElemWrapped && i > 0 && i < exprs.size() - 1) {
+          isElemWrapped = (exprs.get(i - 1) instanceof Literal) &&
+                      ((Literal) exprs.get(i - 1)).getText().equals("(") &&
+                      (exprs.get(i+1) instanceof Literal) &&
+                      ((Literal) exprs.get(i+1)).getText().equals("(");
+      }
+
+      exprs.get(i).toYBNF(sb, isElemWrapped);
     }
     sb.append(end);
   }
@@ -103,13 +123,20 @@ public class Utils {
                                     int repCount,
                                     String start,
                                     String sep,
-                                    String end) {
+                                    String end,
+                                    boolean isWrapped) {
     sb.append(start);
     for (int i = 0; i < repCount; i++) {
       if (i > 0) {
         sb.append(sep);
       }
-      expr.toYBNF(sb,false);
+
+      /* Already wrapped if surrounding separators are non-empty */
+      boolean isElemWrapped = !emptySep(sep) &&
+          (i > 0 || isWrapped || !emptySep(start)) &&
+          (i < repCount - 1 || isWrapped || !emptySep(end));
+
+      expr.toYBNF(sb, isElemWrapped);
     }
     sb.append(end);
   }

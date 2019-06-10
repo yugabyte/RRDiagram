@@ -89,7 +89,7 @@ public class Choice extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isNested) {
+  public void toYBNF(StringBuilder sb, boolean isWrapped) {
     List<Expression> expressionList = new ArrayList<Expression>();
     boolean hasNoop = false;
     for(Expression expression: expressions) {
@@ -102,14 +102,14 @@ public class Choice extends Expression {
 
     if (hasNoop) {
       // This is an optional choice: e.g. "[ e1 | e2 | e2 ]"
-      Utils.exprListToYBNF(sb, expressionList, "[ ", " | ", " ]");
+      Utils.exprListToYBNF(sb, expressionList, "[ ", " | ", " ]", isWrapped);
     } else {
-      if (isNested && expressionList.size() > 1) {
-        // Needs nesting: e.g. "( e1 | e2 | e2 )"
-        Utils.exprListToYBNF(sb, expressionList, "( ", " | ", " )");
-      } else {
+      if (isWrapped && expressionList.size() > 1) {
         // Regular case: "e1 | e2 | e2"
-        Utils.exprListToYBNF(sb, expressionList, "", " | ", "");
+        Utils.exprListToYBNF(sb, expressionList, "", " | ", "", isWrapped);
+      } else {
+        // Needs wrapping: e.g. "{ e1 | e2 | e2 }"
+        Utils.exprListToYBNF(sb, expressionList, "{ ", " | ", " }", isWrapped);
       }
     }
   }

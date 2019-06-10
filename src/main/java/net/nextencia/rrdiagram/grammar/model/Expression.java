@@ -20,7 +20,7 @@ public abstract class Expression {
 
   protected abstract void toBNF(GrammarToBNF grammarToBNF, StringBuilder sb, boolean isNested);
 
-  public abstract void toYBNF(StringBuilder sb, boolean isNested);
+  public abstract void toYBNF(StringBuilder sb, boolean isWrapped);
 
   public abstract Set<String> getUndefinedRuleRefs(Set<String> rules);
 
