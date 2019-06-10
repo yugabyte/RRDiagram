@@ -29,34 +29,35 @@ H2_SELECT =
 </pre>
 
 Usage
-=====
+=======
 
 Generate the required diagrams as follows:
 
-1. Build the java code
+1. Get the executable jar
+
+```bash
+ wget https://github.com/YugaByte/RRDiagram/releases/download/0.9.4/rrdiagram.jar
+```
+
+2. Run the diagram generator:
+
+```bash
+java -jar rrdiagram.jar <input-file.ebnf> <output-file.md>
+```
+_Note: run `java -jar rrdiagram.jar` (without arguments) to see help._
+
+3. Update the appropriate (i.e. `YSQL` or `YCQL`) `grammar_diagrams.md` file in our docs repository based on changes in the newly generated `grammar_diagrams.md`. Typically you can just replace the old version with the newly generated one.
+
+4. Copy the newly-modified generated diagrams and syntax elements, to any relevant files/sections in our documentation (e.g. the `select` into the `dml_select.md` file).
+
+5. After copying the diagrams check that all links (for rule references) work. If they don't, manually replace the link paths as needed (e.g. `../../grammar_diagrams#<...>`).
+
+Build
+=====
 
 ```bash
 mvn package -DskipTests=true
 ```
-
-2. Compile the diagram generator scala program:
-
-```bash
-scalac -cp target/rrdiagram-0.9.4.jar diagram_generator.scala
-```
-
-3. Run the diagram generator:
-
-```bash
-scala -cp target/rrdiagram-0.9.4.jar:. Main yb_cql_grammar.ebnf /tmp/grammar_diagrams.md
-```
-
-4. Update the grammar_diagrams.md file in our docs repository based on changes in the newly
-   generated grammar_diagrams.md. Currently, this needs a bit of manual work in terms of copying the
-   new grammar and svg classes.
-
-5. Some of the newly generated svg classes need to be copied over to various other sections of our
-   documentation.
 
 Internals
 =========
