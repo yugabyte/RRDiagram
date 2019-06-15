@@ -1,5 +1,5 @@
 (* 'ABORT' *)
-abort_transaction ::= 'ABORT' [ 'TRANSACTION' | 'WORK' ] ;
+abort ::= 'ABORT' [ 'TRANSACTION' | 'WORK' ] ;
 
 (* 'ALTER' 'DATABASE' *)
 alter_database ::=
@@ -44,10 +44,10 @@ alter_table_constraint ::= [ 'CONSTRAINT' constraint_name ] (
                        'FOREIGN' 'KEY' '(' column_names ')' references_clause ) ;
 
 (* 'BEGIN' *)
-begin_transaction ::= 'BEGIN' [ 'TRANSACTION' | 'WORK' ] ;
+begin = 'BEGIN' [ 'TRANSACTION' | 'WORK' ] { transaction_mode } ;
 
 (* 'COMMIT' 'TRANSACTION' *)
-commit_transaction ::= 'COMMIT' [ 'TRANSACTION' | 'WORK' ] ;
+commit ::= 'COMMIT' [ 'TRANSACTION' | 'WORK' ] ;
 
 (* 'COPY' *)
 copy_from ::= 'COPY' table_name [ '(' column_name { ',' column_name } ')' ] \
@@ -172,7 +172,7 @@ drop_database ::= 'DROP' 'DATABASE' [ 'IF' 'EXISTS' ] database_name ;
 drop_table ::= 'DROP' 'TABLE' [ 'IF' 'EXISTS' ] table_name ;
 
 (* 'END' 'TRANSACTION' *)
-end_transaction ::= 'END' [ 'TRANSACTION' | 'WORK' ] ;
+end ::= 'END' [ 'TRANSACTION' | 'WORK' ] ;
 
 (* 'EXECUTE' *)
 execute_statement ::= 'EXECUTE' name [ '(' expression { ',' expression } ')' ] ;
@@ -233,7 +233,7 @@ reset_stmt := 'RESET' ( name | 'ALL' ) ;
 revoke ::= 'REVOKE' privileges 'ON' privilege_target 'FROM' name { ',' name } [ 'CASCADE' | 'RESTRICT' ] ;
 
 (* 'ROLLBACK' *)
-rollback_transaction ::= 'ROLLBACK' [ 'TRANSACTION' | 'WORK' ] ;
+rollback ::= 'ROLLBACK' [ 'TRANSACTION' | 'WORK' ] ;
 
 (* 'SELECT' *)
 select ::= [ 'WITH' [ 'RECURSIVE' ] ( with_query { ',' with_query } ) ] \
@@ -262,12 +262,16 @@ set ::= 'SET' [ 'SESSION' | 'LOCAL' ]
 set_constraints ::= 'SET' 'CONSTRAINTS' ( 'ALL' | name { ',' name } ) ( 'DEFERRED' | 'IMMEDIATE' ) ;
 
 (* 'SET' 'TRANSACTION' *)
-set_transaction ::= 'SET' 'TRANSACTION' ( 'ISOLATION' 'LEVEL' ( 'READ' 'UNCOMMITTED'
-                                                              | 'READ' 'COMMITTED'
-                                                              | 'REPEATABLE' 'READ'
-                                                              | 'SERIALIZABLE' )
-                                          | 'READ' 'ONLY'
-                                          | 'READ' 'WRITE' ) ;
+set_transaction = 'SET' 'TRANSACTION' transaction_mode { transaction_mode } ;
+
+transaction_mode = read_write_mode | isolation_level ;
+
+read_write_mode = 'READ' 'ONLY' | 'READ' 'WRITE' ;
+
+isolation_level = 'ISOLATION' 'LEVEL' ( 'READ' 'UNCOMMITTED'
+                                       | 'READ' 'COMMITTED'
+                                       | 'REPEATABLE' 'READ'
+                                       | 'SERIALIZABLE' );
 
 (* 'SHOW' variable *)
 show_stmt ::= 'SHOW' ( name | 'ALL' ) ;
