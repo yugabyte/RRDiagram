@@ -31,26 +31,28 @@ H2_SELECT =
 Usage
 =======
 
-Generate the required diagrams as follows:
+Generate new syntax/diagrams when updating the docs as follows:
 
-1. Get the executable jar
+1. Update the appropriate (i.e. `yb_cql_grammar.ebnf` or `yb_pgsql_grammar.ebnf`) source grammar file with your changes (e.g. adding a new supported statement or clause).
+2. Get the executable jar
 
 ```bash
  wget https://github.com/YugaByte/RRDiagram/releases/download/0.9.4/rrdiagram.jar
 ```
+_Note: Alternative build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
 
-2. Run the diagram generator:
+3. Run the diagram generator:
 
 ```bash
 java -jar rrdiagram.jar <input-file.ebnf> <output-file.md>
 ```
 _Note: run `java -jar rrdiagram.jar` (without arguments) to see help._
 
-3. Update the appropriate (i.e. `YSQL` or `YCQL`) `grammar_diagrams.md` file in our docs repository based on changes in the newly generated `grammar_diagrams.md`. Typically you can just replace the old version with the newly generated one.
+4. Update the corresponding (i.e. `YSQL` or `YCQL`) `grammar_diagrams.md` file in our docs repository based on changes in the newly generated `grammar_diagrams.md`. Typically you can just replace the old version with the newly generated one.
 
-4. Copy the newly-modified generated diagrams and syntax elements, to any relevant files/sections in our documentation (e.g. the `select` into the `dml_select.md` file).
+5. Copy the newly-modified generated diagrams and syntax elements to any relevant files/sections in our documentation (e.g. the `select` into the `dml_select.md` file).
 
-5. After copying the diagrams check that all links (for rule references) work. If they don't, manually replace the link paths as needed (e.g. `../../grammar_diagrams#<...>`).
+6. After copying the diagrams check that all links (for rule references) work. If they don't, manually replace the link paths as needed (e.g. `../../grammar_diagrams#<...>`).
 
 Build
 =====
