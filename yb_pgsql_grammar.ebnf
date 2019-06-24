@@ -116,7 +116,8 @@ cache ::= '<Integer Literal>' ;
 
 (* 'CREATE' 'TABLE' *)
 create_table ::= 'CREATE' 'TABLE' [ 'IF' 'NOT' 'EXISTS' ] table_name
-                 '(' [ table_elem { ',' table_elem } ] ')' ;
+                 '(' [ table_elem { ',' table_elem } ] ')'
+                 [ 'WITH' '(' storage_param { ',' storage_param } ')' | 'WITHOUT' 'OIDS' ] ;
 
 table_elem ::= ( column_name data_type [ column_constraint { column_constraint } ] ) | table_constraint ;
 
@@ -138,6 +139,8 @@ references_clause ::= 'REFERENCES' table_name [ ( column_name { ',' column_name 
                       [ 'ON' 'DELETE' key_action ] [ 'ON' 'UPDATE' key_action ] ;
 
 key_action ::= 'NO' 'ACTION' | 'RESTRICT' | 'CASCADE' | 'SET' 'NULL' | 'SET' 'DEFAULT' ;
+
+storage_param ::= storage_parameter [ '=' value] ;
 
 
 (* 'CREATE' 'TABLE' 'AS' *)
