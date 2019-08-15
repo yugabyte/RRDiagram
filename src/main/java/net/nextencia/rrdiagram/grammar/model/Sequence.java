@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.nextencia.rrdiagram.common.Utils;
+import net.nextencia.rrdiagram.common.YBNFStringBuilder;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRLoop;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRSequence;
@@ -96,7 +97,7 @@ public class Sequence extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isWrapped) {
+  public void toYBNF(YBNFStringBuilder sb, boolean isWrapped) {
     if(expressions.length == 0) {
       sb.append("{ }");
       return;
@@ -113,9 +114,9 @@ public class Sequence extends Expression {
     }
 
     if(!isWrapped) {
-      Utils.exprListToYBNF(sb, expressionList, "{ "," "," }", true);
+      sb.appendExprList(expressionList, "{ "," "," }", true);
     } else {
-      Utils.exprListToYBNF(sb, expressionList, ""," ","", true);
+      sb.appendExprList(expressionList, ""," ","", true);
     }
   }
 

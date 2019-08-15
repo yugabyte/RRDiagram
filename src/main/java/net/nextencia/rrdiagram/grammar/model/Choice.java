@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.nextencia.rrdiagram.common.Utils;
+import net.nextencia.rrdiagram.common.YBNFStringBuilder;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRChoice;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 
@@ -89,7 +90,7 @@ public class Choice extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isWrapped) {
+  public void toYBNF(YBNFStringBuilder sb, boolean isWrapped) {
     List<Expression> expressionList = new ArrayList<Expression>();
     boolean hasNoop = false;
     for(Expression expression: expressions) {
@@ -101,15 +102,15 @@ public class Choice extends Expression {
     }
 
     if (hasNoop) {
-      // This is an optional choice: e.g. "[ e1 | e2 | e2 ]"
-      Utils.exprListToYBNF(sb, expressionList, "[ ", " | ", " ]", isWrapped);
+      // This is an optional choice: e.g. "[ e1 | e2 | e3 ]"
+      sb.appendExprList(expressionList, "[ ", " | ", " ]", isWrapped);
     } else {
       if (isWrapped && expressionList.size() > 1) {
-        // Regular case: "e1 | e2 | e2"
-        Utils.exprListToYBNF(sb, expressionList, "", " | ", "", isWrapped);
+        // Regular case: "e1 | e2 | e3"
+        sb.appendExprList(expressionList, "", " | ", "", isWrapped);
       } else {
-        // Needs wrapping: e.g. "{ e1 | e2 | e2 }"
-        Utils.exprListToYBNF(sb, expressionList, "{ ", " | ", " }", isWrapped);
+        // Needs wrapping: e.g. "{ e1 | e2 | e3 }"
+        sb.appendExprList(expressionList, "{ ", " | ", " }", isWrapped);
       }
     }
   }

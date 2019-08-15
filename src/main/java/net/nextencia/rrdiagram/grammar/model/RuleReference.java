@@ -8,6 +8,7 @@
 package net.nextencia.rrdiagram.grammar.model;
 
 import net.nextencia.rrdiagram.common.Utils;
+import net.nextencia.rrdiagram.common.YBNFStringBuilder;
 import net.nextencia.rrdiagram.grammar.model.GrammarToRRDiagram.RuleLinkProvider;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRBreak;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
@@ -50,11 +51,11 @@ public class RuleReference extends Expression {
       sb.append("\n");
     }
   }
-
   @Override
-  public void toYBNF(StringBuilder sb, boolean isNested) {
-    if(ruleName.equals(Utils.lineBreakRule)) {
-      sb.append("\n");
+  public void toYBNF(YBNFStringBuilder sb, boolean isWrapped) {
+    if (ruleName.equals(Utils.lineBreakRule)) {
+      // TODO: For now ignore this and use auto-generated line-breaking
+      //sb.lineBreak();
     } else {
       sb.append(ruleName);
     }

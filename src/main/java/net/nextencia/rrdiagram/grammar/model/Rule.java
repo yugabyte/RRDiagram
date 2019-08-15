@@ -7,6 +7,7 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
+import net.nextencia.rrdiagram.common.YBNFStringBuilder;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRDiagram;
 
 import java.util.Set;
@@ -58,10 +59,11 @@ public class Rule {
   }
 
   public String toYBNF() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(name);
-    sb.append(" ::= ");
-    expression.toYBNF(sb, true);
+    YBNFStringBuilder size_estimator = new YBNFStringBuilder();
+    size_estimator.append(expression, true);
+
+    YBNFStringBuilder sb = new YBNFStringBuilder(name);
+    sb.append(expression, true);
     return sb.toString();
   }
 

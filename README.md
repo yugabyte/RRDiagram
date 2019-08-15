@@ -1,58 +1,35 @@
 RRDiagram
 =========
 
-Generate railroad diagrams from code or BNF. Generate BNF from code.
+Tool for generating railroad diagrams and doc-style grammar for [YugaByte API docs](docs.yugabyte.com).
 
-RR Diagram is a Java library that generates railroad diagrams (also called syntax diagrams) from code or from BNF notation. The output format is a very compact SVG image which can be integrated to web pages and where rules can contain links.
-
-RR Diagram can also be used to generate BNF notation from a model.
-
-The generated output was inspired from this online-only version: http://railroad.my28msec.com/rr/ui
-
-Binaries can be found on the [SourceForge page](https://sourceforge.net/projects/rrdiagram/).
+Tool is based on: https://github.com/Chrriis/RRDiagram.
 
 Example
 =======
 
-This is the kind of diagrams that can get generated:
-![H2 Select](http://rrdiagram.sourceforge.net/H2Select.svg)
-
-The above is generated using the right conversion options on this BNF:
-<pre>
-H2_SELECT = 
-'SELECT' [ 'TOP' term ] [ 'DISTINCT' | 'ALL' ] selectExpression {',' selectExpression} \
-'FROM' tableExpression {',' tableExpression} [ 'WHERE' expression ] \
-[ 'GROUP BY' expression {',' expression} ] [ 'HAVING' expression ] \
-[ ( 'UNION' [ 'ALL' ] | 'MINUS' | 'EXCEPT' | 'INTERSECT' ) select ] [ 'ORDER BY' order {',' order} ] \
-[ 'LIMIT' expression [ 'OFFSET' expression ] [ 'SAMPLE_SIZE' rowCountInt ] ] \
-[ 'FOR UPDATE' ];
-</pre>
+This is the kind of grammars and diagrams that can get generated:
+https://docs.yugabyte.com/latest/api/ysql/commands/cmd_copy/
 
 Usage
 =======
 
-Generate new syntax/diagrams when updating the docs as follows:
-
-1. Update the appropriate (i.e. `yb_cql_grammar.ebnf` or `yb_pgsql_grammar.ebnf`) source grammar file with your changes (e.g. adding a new supported statement or clause).
-2. Get the executable jar
+1. Get the executable jar
 
 ```bash
  wget https://github.com/YugaByte/RRDiagram/releases/download/0.9.4/rrdiagram.jar
 ```
-_Note: Alternative build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
+_Note: Alternatively build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
 
-3. Run the diagram generator:
+2. Run the diagram generator:
 
 ```bash
-java -jar rrdiagram.jar <input-file.ebnf> <output-file.md>
+java -jar rrdiagram.jar <input-file.ebnf> <output-folder>
 ```
 _Note: run `java -jar rrdiagram.jar` (without arguments) to see help._
 
-4. Update the corresponding (i.e. `YSQL` or `YCQL`) `grammar_diagrams.md` file in our docs repository based on changes in the newly generated `grammar_diagrams.md`. Typically you can just replace the old version with the newly generated one.
 
-5. Copy the newly-modified generated diagrams and syntax elements to any relevant files/sections in our documentation (e.g. the `select` into the `dml_select.md` file).
-
-6. After copying the diagrams check that all links (for rule references) work. If they don't, manually replace the link paths as needed (e.g. `../../grammar_diagrams#<...>`).
+For more detailed instructions see the [YugaByte Docs Readme](https://github.com/YugaByte/yugabyte-db/blob/master/docs/README.md).
 
 Build
 =====

@@ -7,14 +7,13 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
-import net.nextencia.rrdiagram.common.Utils;
+import net.nextencia.rrdiagram.common.YBNFStringBuilder;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRChoice;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRLine;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRLoop;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 
@@ -142,12 +141,11 @@ public class Repetition extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isWrapped) {
-
+  public void toYBNF(YBNFStringBuilder sb, boolean isWrapped) {
     if (minRepetitionCount > 0) {
       // e.g.: 'expr expr expr'
       prevExpression = expression;
-      Utils.exprRepToYBNF(sb, expression, minRepetitionCount, "", " ", "", false);
+      sb.appendRepExpr(expression, minRepetitionCount, "", " ", "", false);
       if (maxRepetitionCount != null && maxRepetitionCount == minRepetitionCount) {
         return; // We are done.
       }
@@ -157,7 +155,7 @@ public class Repetition extends Expression {
 
     if (maxRepetitionCount != null) {
       // e.g. (including min reps): 'expr expr expr [ expr ] [ expr ] [ expr ]'
-      Utils.exprRepToYBNF(sb, expression, maxRepetitionCount - minRepetitionCount, "[ ", " ] [ ", " ]", true);
+      sb.appendRepExpr(expression, maxRepetitionCount - minRepetitionCount, "[ ", " ] [ ", " ]", true);
     } else {
       if (expression.equals(prevExpression)) {
         // e.g. 'expr [ ... ]'
@@ -167,11 +165,11 @@ public class Repetition extends Expression {
           ((Sequence) expression).getLastExpression().equals(prevExpression)) {
         // e.g. expr [ ,  ... ]
         List<Expression> exprs = Arrays.asList(((Sequence) expression).getExpressions());
-        Utils.exprListToYBNF(sb, exprs.subList(0, exprs.size() - 1), "[ ", "", " ... ]", true);
+        sb.appendExprList(exprs.subList(0, exprs.size() - 1), "[ ", "", " ... ]", true);
       } else {
         // Must simulate previous element by wrapping in an optional: e.g. '[ expr [ ... ] ]'
         sb.append("[ ");
-        expression.toYBNF(sb, true);
+        sb.append(expression, true);
         sb.append(" [ ... ] ]");
       }
     }

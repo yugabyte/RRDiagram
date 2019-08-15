@@ -7,6 +7,7 @@
  */
 package net.nextencia.rrdiagram.grammar.model;
 
+import net.nextencia.rrdiagram.common.YBNFStringBuilder;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRElement;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRText.Type;
@@ -38,7 +39,7 @@ public class SpecialSequence extends Expression {
   }
 
   @Override
-  public void toYBNF(StringBuilder sb, boolean isNested) {
+  public void toYBNF(YBNFStringBuilder sb, boolean isWrapped) {
     throw new UnsupportedOperationException("Special sequences not supported in YBNF");
   }
 
