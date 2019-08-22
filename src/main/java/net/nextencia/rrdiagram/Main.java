@@ -154,7 +154,7 @@ public class Main {
 
   private static String getGlobalRulePrefix(File diagFile) {
     StringBuilder sb = new StringBuilder();
-    File file = diagFile;
+    File file = diagFile.getAbsoluteFile();
     while (file != null && !file.getName().equals("syntax_resources")) {
       sb.append("../");
       file = file.getParentFile();
