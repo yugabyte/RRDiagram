@@ -19,11 +19,13 @@ public class Main {
     System.out.println("Usage: java -jar rrdiagram.jar <input-file.ebnf> <output-folder>");
     System.out.println("Will re-generate contents for each file in the output folder as follows:");
     System.out.println(" - grammar_diagrams.md: reference file with all grammar&diagram for all rules");
-    System.out.println(" - *.grammar.md: diagrams for all rules (comma-separated) from file name");
+    System.out.println(" - *.diagrams.md: diagrams for all rules (comma-separated) from file name");
     System.out.println(" - *.grammar.md: grammars for all rules (comma-separated) from file name");
     System.out.println("Other files with non-matching names will be ignored.");
-    System.out.println("Example: ");
-    System.out.println("java -jar rrdiagram.jar ysql_grammar.ebnf ~/code/yugabyte/docs/content/latest/api/ysql/syntax/");
+    System.out.println("Example:");
+    System.out.println("  java -jar rrdiagram.jar "
+                       + "docs/content/latest/api/ysql/syntax_resources/ysql_grammar.ebnf "
+                       + "docs/content/latest/api/ysql/syntax_resources/");
     System.exit(1);
   }
 
@@ -152,7 +154,7 @@ public class Main {
 
   private static String getGlobalRulePrefix(File diagFile) {
     StringBuilder sb = new StringBuilder();
-    File file = diagFile;
+    File file = diagFile.getAbsoluteFile();
     while (file != null && !file.getName().equals("syntax_resources")) {
       sb.append("../");
       file = file.getParentFile();
