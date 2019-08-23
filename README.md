@@ -16,19 +16,21 @@ Usage
 
 1. Get the executable jar
 
-```bash
- wget https://github.com/YugaByte/RRDiagram/releases/download/0.9.4/rrdiagram.jar
-```
-_Note: Alternatively build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
+   ```bash
+    wget https://github.com/YugaByte/RRDiagram/releases/download/0.9.4/rrdiagram.jar
+   ```
+
+   _Note: Alternatively build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
 
 1. Get fonts, if necessary.  At the time of writing, Yugabyte uses _Verdana_.
 
 1. Run the diagram generator:
 
-```bash
-java -jar rrdiagram.jar <input-file.ebnf> <output-folder>
-```
-_Note: run `java -jar rrdiagram.jar` (without arguments) to see help._
+   ```bash
+   java -jar rrdiagram.jar <input-file.ebnf> <output-folder>
+   ```
+
+   _Note: run `java -jar rrdiagram.jar` (without arguments) to see help._
 
 
 For more detailed instructions see the [YugaByte Docs Readme](https://github.com/YugaByte/yugabyte-db/blob/master/docs/README.md).
