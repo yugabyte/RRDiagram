@@ -7,11 +7,12 @@ import net.nextencia.rrdiagram.grammar.rrdiagram.RRDiagramToSVG;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
 
@@ -154,14 +155,20 @@ public class Main {
 
   private static String getGlobalRulePrefix(File diagFile) {
     StringBuilder sb = new StringBuilder();
-    File file = diagFile.getAbsoluteFile();
-    while (file != null && !file.getName().equals("syntax_resources")) {
-      sb.append("../");
-      file = file.getParentFile();
-    }
-    if (file == null) {
-      logErr("Invalid file path '" + diagFile + "'.\n" +
-                 "Expected to have an ancestor called 'syntax_resources'.");
+    try {
+      File file = diagFile.getCanonicalFile();
+      while (file != null && !file.getName().equals("syntax_resources")) {
+        sb.append("../");
+        file = file.getParentFile();
+      }
+      if (file == null) {
+        logErr("Invalid file path '" + diagFile + "'.\n"
+               + "Expected to have an ancestor called 'syntax_resources'.");
+        System.exit(1);
+      }
+    } catch (IOException exception) {
+      logErr("Caught IOException while trying to get the canonical file of '"
+             + diagFile + "': " + exception);
       System.exit(1);
     }
     sb.append("syntax_resources/grammar_diagrams");
