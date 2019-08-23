@@ -21,7 +21,9 @@ Usage
 ```
 _Note: Alternatively build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
 
-2. Run the diagram generator:
+1. Get fonts, if necessary.  At the time of writing, Yugabyte uses _Verdana_.
+
+1. Run the diagram generator:
 
 ```bash
 java -jar rrdiagram.jar <input-file.ebnf> <output-folder>
