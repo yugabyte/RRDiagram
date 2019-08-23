@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,6 +61,7 @@ public class Main {
       System.exit(1);
     }
 
+    Arrays.sort(files);
     for (File file : files) {
       if (file.isDirectory()) {
         regenerateFolder(file, grammar);
