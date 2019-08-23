@@ -9,12 +9,26 @@ package net.nextencia.rrdiagram.grammar.rrdiagram;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 
 /**
  * @author Christopher Deckers
  */
 public class RRDiagramToSVG {
+
+  public static final String FONT_FAMILY_NAME = "Verdana";
+
+  public static boolean isFontInstalled() {
+    GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    String[] fontFamilyNames = graphicsEnvironment.getAvailableFontFamilyNames();
+    for (String fontFamilyName : fontFamilyNames) {
+      if (fontFamilyName.equals(FONT_FAMILY_NAME)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   public String convert(RRDiagram rrDiagram) {
     return rrDiagram.toSVG(this);
@@ -30,7 +44,7 @@ public class RRDiagramToSVG {
     return connectorColor;
   }
 
-  private Font loopFont = new Font("Verdana", Font.PLAIN, 10);
+  private Font loopFont = new Font(FONT_FAMILY_NAME, Font.PLAIN, 10);
 
   public void setLoopFont(Font loopFont) {
     this.loopFont = loopFont;
@@ -66,7 +80,7 @@ public class RRDiagramToSVG {
     return ruleInsets;
   }
 
-  private Font ruleFont = new Font("Verdana", Font.PLAIN, 12);
+  private Font ruleFont = new Font(FONT_FAMILY_NAME, Font.PLAIN, 12);
 
   public void setRuleFont(Font ruleFont) {
     this.ruleFont = ruleFont;
@@ -126,7 +140,7 @@ public class RRDiagramToSVG {
     return literalInsets;
   }
 
-  private Font literalFont = new Font("Verdana", Font.PLAIN, 12);
+  private Font literalFont = new Font(FONT_FAMILY_NAME, Font.PLAIN, 12);
 
   public void setLiteralFont(Font literalFont) {
     this.literalFont = literalFont;
@@ -186,7 +200,7 @@ public class RRDiagramToSVG {
     return specialSequenceInsets;
   }
 
-  private Font specialSequenceFont = new Font("Verdana", Font.PLAIN, 12);
+  private Font specialSequenceFont = new Font(FONT_FAMILY_NAME, Font.PLAIN, 12);
 
   public void setSpecialSequenceFont(Font specialSequenceFont) {
     this.specialSequenceFont = specialSequenceFont;

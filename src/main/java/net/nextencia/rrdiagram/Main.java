@@ -5,7 +5,6 @@ import net.nextencia.rrdiagram.grammar.model.*;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRDiagram;
 import net.nextencia.rrdiagram.grammar.rrdiagram.RRDiagramToSVG;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,8 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Main {
-
-  public static final String FONTFAMILYNAME = "Verdana";
 
   private static void printHelpAndExit() {
     System.out.println("Usage: java -jar rrdiagram.jar <input-file.ebnf> <output-folder>");
@@ -40,8 +37,8 @@ public class Main {
       printHelpAndExit();
     }
 
-    if (!isFontInstalled()) {
-      logErr("Could not find font: " + FONTFAMILYNAME);
+    if (!RRDiagramToSVG.isFontInstalled()) {
+      logErr("Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
       System.exit(1);
     }
 
@@ -54,17 +51,6 @@ public class Main {
     Grammar grammar = btg.convert(in);
 
     regenerateFolder(outFolder, grammar);
-  }
-
-  private static boolean isFontInstalled() {
-    GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    String[] fontFamilyNames = graphicsEnvironment.getAvailableFontFamilyNames();
-    for (String fontFamilyName : fontFamilyNames) {
-      if (fontFamilyName.equals(FONTFAMILYNAME)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private static void regenerateFolder(File outFolder, Grammar grammar) throws Exception {
