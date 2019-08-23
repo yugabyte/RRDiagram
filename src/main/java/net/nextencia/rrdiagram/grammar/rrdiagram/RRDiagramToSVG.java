@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.util.Arrays;
 
 /**
  * @author Christopher Deckers
@@ -22,12 +23,7 @@ public class RRDiagramToSVG {
   public static boolean isFontInstalled() {
     GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fontFamilyNames = graphicsEnvironment.getAvailableFontFamilyNames();
-    for (String fontFamilyName : fontFamilyNames) {
-      if (fontFamilyName.equals(FONT_FAMILY_NAME)) {
-        return true;
-      }
-    }
-    return false;
+    return (Arrays.binarySearch(fontFamilyNames, FONT_FAMILY_NAME) >= 0);
   }
 
   public String convert(RRDiagram rrDiagram) {
