@@ -12,24 +12,9 @@ This is the kind of grammars and diagrams that can get generated:
 https://docs.yugabyte.com/latest/api/ysql/commands/cmd_copy/
 
 Usage
-=======
+=====
 
-1. Get the executable jar
-
-```bash
- wget https://github.com/YugaByte/RRDiagram/releases/download/0.9.4/rrdiagram.jar
-```
-_Note: Alternatively build manually as described in the [Build](#build) section below (and move/rename the resulting jar from the target folder)._
-
-2. Run the diagram generator:
-
-```bash
-java -jar rrdiagram.jar <input-file.ebnf> <output-folder>
-```
-_Note: run `java -jar rrdiagram.jar` (without arguments) to see help._
-
-
-For more detailed instructions see the [YugaByte Docs Readme](https://github.com/YugaByte/yugabyte-db/blob/master/docs/README.md).
+See the [Yugabyte docs README](YugaByte/yugabyte-db/docs/README.md#generate-api-syntax-diagrams).
 
 Build
 =====

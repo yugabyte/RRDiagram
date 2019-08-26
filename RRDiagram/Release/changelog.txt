@@ -5,6 +5,10 @@ Licence terms: ASL 2.0 (see licence.txt)
 
 ---------------------------------- Change log ----------------------------------
 
+* Version 0.9.4-yb-1 (August 26, 2019):
+
+- Port to Yugabyte docs use-case.
+
 * Version 0.9.4 (October 9, 2017):
 
 - Store original parsed expression in rule.

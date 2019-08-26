@@ -7,11 +7,13 @@ import net.nextencia.rrdiagram.grammar.rrdiagram.RRDiagramToSVG;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
 
@@ -36,6 +38,11 @@ public class Main {
       printHelpAndExit();
     }
 
+    if (!RRDiagramToSVG.isFontInstalled()) {
+      logErr("Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
+      System.exit(1);
+    }
+
     String inFileName = args[0];
     String outFolderName = args[1];
     File outFolder = new File(outFolderName);
@@ -54,6 +61,7 @@ public class Main {
       System.exit(1);
     }
 
+    Arrays.sort(files);
     for (File file : files) {
       if (file.isDirectory()) {
         regenerateFolder(file, grammar);
@@ -154,14 +162,20 @@ public class Main {
 
   private static String getGlobalRulePrefix(File diagFile) {
     StringBuilder sb = new StringBuilder();
-    File file = diagFile.getAbsoluteFile();
-    while (file != null && !file.getName().equals("syntax_resources")) {
-      sb.append("../");
-      file = file.getParentFile();
-    }
-    if (file == null) {
-      logErr("Invalid file path '" + diagFile + "'.\n" +
-                 "Expected to have an ancestor called 'syntax_resources'.");
+    try {
+      File file = diagFile.getCanonicalFile();
+      while (file != null && !file.getName().equals("syntax_resources")) {
+        sb.append("../");
+        file = file.getParentFile();
+      }
+      if (file == null) {
+        logErr("Invalid file path '" + diagFile + "'.\n"
+               + "Expected to have an ancestor called 'syntax_resources'.");
+        System.exit(1);
+      }
+    } catch (IOException exception) {
+      logErr("Caught IOException while trying to get the canonical file of '"
+             + diagFile + "': " + exception);
       System.exit(1);
     }
     sb.append("syntax_resources/grammar_diagrams");
