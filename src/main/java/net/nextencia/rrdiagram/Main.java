@@ -121,7 +121,7 @@ public class Main {
 
         /*
           // Debug mode.
-          pw.write("```\n");
+          pw.write("```\ebnfn");
           pw.write(rule.toBNF(bnf_builder));
           pw.write("\n```\n");
         */
