@@ -126,7 +126,7 @@ public class Main {
           pw.write("\n```\n");
         */
 
-        pw.write("```\n");
+        pw.write("```ebnf\n");
         pw.write(rule.toYBNF());
         pw.write("\n```\n");
         GrammarToRRDiagram diagram_builder = new GrammarToRRDiagram();
@@ -148,7 +148,7 @@ public class Main {
 
   private static void reGenerateGrammar(File outFile, List<Rule> targetRules) throws Exception {
     PrintWriter pw = new java.io.PrintWriter(outFile);
-    pw.write("```\n");
+    pw.write("```ebnf\n");
     for (int i = 0; i < targetRules.size(); i++) {
       if (i > 0) {
         pw.write("\n");
