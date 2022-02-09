@@ -1,34 +1,30 @@
-RRDiagram
-=========
+# RRDiagram
 
-Tool for generating railroad diagrams and doc-style grammar for [YugaByte API docs](docs.yugabyte.com).
+Tool for generating railroad diagrams and doc-style grammar for [Yugabyte API docs](docs.yugabyte.com).
 
-Tool is based on: https://github.com/Chrriis/RRDiagram.
+Tool is based on: <https://github.com/Chrriis/RRDiagram>.
 
-Example
-=======
+## Example
 
 This is the kind of grammars and diagrams that can get generated:
-https://docs.yugabyte.com/latest/api/ysql/commands/cmd_copy/
+<https://docs.yugabyte.com/latest/api/ysql/commands/cmd_copy/>
 
-Usage
-=====
+## Usage
 
 See the [Yugabyte docs README](YugaByte/yugabyte-db/docs/README.md#generate-api-syntax-diagrams).
 
-Build
-=====
+## Build
 
 ```bash
 mvn package -DskipTests=true
 ```
 
-Internals
-=========
+## Internals
 
 The diagram model represents the actual constructs visible on the diagram.
 To convert a diagram model to SVG:
-```Java
+
+```java
 RRDiagram rrDiagram = new RRDiagram(rrElement);
 RRDiagramToSVG rrDiagramToSVG = new RRDiagramToSVG();
 String svg = rrDiagramToSVG.convert(rrDiagram);
@@ -36,7 +32,8 @@ String svg = rrDiagramToSVG.convert(rrDiagram);
 
 The grammar model represents a BNF-like grammar.
 It can be converted to a diagram model:
-```Java
+
+```java
 Grammar grammar = new Grammar(rules);
 GrammarToRRDiagram grammarToRRDiagram = new GrammarToRRDiagram();
 for(Rule rule: grammar.getRules()) {
@@ -46,23 +43,25 @@ for(Rule rule: grammar.getRules()) {
 ```
 
 The grammar model can be created from code, or can read BNF syntax:
-```Java
+
+```java
 BNFToGrammar bnfToGrammar = new BNFToGrammar();
 Grammar grammar = bnfToGrammar.convert(reader);
 // Do something with grammar, like get the diagram for SVG output.
 ```
 
 The grammar model can also be saved to BNF syntax:
-```Java
+
+```java
 GrammarToBNF grammarToBNF = new GrammarToBNF();
 // Set options on the grammarToBNF object
 String bnf = grammarToBNF.convert(grammar);
 ```
 
-BNF Syntax
-==========
+## BNF Syntax
 
 The supported BNF subset when reading is the following:
+
 <pre>
 - definition
     =
@@ -97,7 +96,6 @@ The supported BNF subset when reading is the following:
 
 When getting the BNF syntax from the grammar model, it is possible to tweak the kind of BNF to get by changing some options on the converter.
 
-License
-=======
+## License
 
 This library is provided under the ASL 2.0.
