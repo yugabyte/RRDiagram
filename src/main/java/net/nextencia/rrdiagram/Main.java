@@ -113,7 +113,6 @@ public class Main {
     pw.write("---\n");
     pw.write("title: Grammar Diagrams\n");
     pw.write("summary: Diagrams of the grammar rules.\n");
-    pw.write("type: docs\n");
     pw.write("---\n\n");
 
     for (Rule rule : grammar.getRules()) {
