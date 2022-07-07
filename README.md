@@ -1,6 +1,6 @@
 # RRDiagram
 
-Tool for generating railroad diagrams and doc-style grammar for [Yugabyte API docs](docs.yugabyte.com).
+Tool for generating railroad diagrams and doc-style grammar for [Yugabyte API docs](https://docs.yugabyte.com).
 
 Tool is based on: <https://github.com/Chrriis/RRDiagram>.
 
@@ -11,7 +11,7 @@ This is the kind of grammars and diagrams that can get generated:
 
 ## Usage
 
-See the [Yugabyte docs README](YugaByte/yugabyte-db/docs/README.md#generate-api-syntax-diagrams).
+See the [Yugabyte docs README](yugabyte/yugabyte-db/docs/README.md#generate-api-syntax-diagrams).
 
 ## Build
 
