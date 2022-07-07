@@ -11,7 +11,7 @@ This is the kind of grammars and diagrams that can get generated:
 
 ## Usage
 
-See the [Yugabyte docs README](yugabyte/yugabyte-db/docs/README.md#generate-api-syntax-diagrams).
+See the [Yugabyte docs contributors guide](https://docs.yugabyte.com/preview/contribute/docs/syntax-diagrams/).
 
 ## Build
 
