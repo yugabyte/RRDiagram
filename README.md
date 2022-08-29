@@ -6,8 +6,7 @@ Tool is based on: <https://github.com/Chrriis/RRDiagram>.
 
 ## Example
 
-This is the kind of grammars and diagrams that can get generated:
-<https://docs.yugabyte.com/latest/api/ysql/commands/cmd_copy/>
+This is the kind of grammar and syntax diagrams that can get generated: <https://docs.yugabyte.com/preview/api/ysql/commands/cmd_copy/>
 
 ## Usage
 
