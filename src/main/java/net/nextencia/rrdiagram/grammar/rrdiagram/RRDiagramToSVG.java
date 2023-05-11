@@ -23,7 +23,7 @@ public class RRDiagramToSVG {
   public static boolean isFontInstalled() {
     GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
     String[] fontFamilyNames = graphicsEnvironment.getAvailableFontFamilyNames();
-    return (Arrays.asList(fontFamilyNames).contains(FONT_FAMILY_NAME));
+    return Arrays.asList(fontFamilyNames).contains(FONT_FAMILY_NAME);
   }
 
   public String convert(RRDiagram rrDiagram) {
