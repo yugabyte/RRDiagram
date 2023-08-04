@@ -77,7 +77,7 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar</goal>
+                            <!-- <goal>jar</goal> -->
                         </goals>
                     </execution>
                 </executions>
