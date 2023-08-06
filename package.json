@@ -1,0 +1,29 @@
+{
+  "name": "yb-rrdiagram",
+  "version": "0.0.1",
+  "description": "Generate railroad diagrams and grammar for YugabyteDB YSQL/YCQL grammar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yugabyte/RRDiagram.git"
+  },
+  "files": [
+    "rrdiagram*.jar"
+  ],
+  "keywords": [
+    "yugabyte",
+    "yugabytedb",
+    "ebny",
+    "ysql",
+    "ycql"
+  ],
+  "author": "Yugabyte",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "bugs": {
+    "url": "https://github.com/yugabyte/RRDiagram/issues"
+  },
+  "homepage": "https://github.com/yugabyte/RRDiagram#readme"
+}
