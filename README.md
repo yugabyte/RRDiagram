@@ -12,11 +12,30 @@ This is the kind of grammar and syntax diagrams that can get generated: <https:/
 
 See the [Yugabyte docs contributors guide](https://docs.yugabyte.com/preview/contribute/docs/syntax-diagrams/).
 
+## Running as a server
+
+To start the diagram server, run `make server.` The service runs on port `1314` @ `/bnf`. The service can be reached as `curl "localhost:1314/bnf?mode=diagram&rules=select"`. These are the parameters supported.
+
+- api : ysql/ycql (Default: ysql)
+- version: preview/stable/v2.12 ... (Default: preview)
+- mode : reference/grammar/diagram
+- depth : number (optional param)
+- rules : comma-separated rule names (eg rules=select,select_start)
+- local: comma-separated rule names that have be x-ref'd locally (eg rules=select,select_start)
+
 ## Build
 
 ```bash
-mvn package -DskipTests=true
+make
 ```
+
+## Publishing to the npm registry
+
+1. Update the version number in [package.json](package.json)
+1. Build the npm package using `make package`
+1. You need an account on npm to publish. If you don't have one, go to [www.npmjs.com](https://www.npmjs.com/) and create a free account.
+1. Authenticate on the command line with `npm login`
+1. Publish using `make publish`
 
 ## Internals
 

@@ -1,6 +1,6 @@
 {
   "name": "yb-rrdiagram",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generate railroad diagrams and grammar for YugabyteDB YSQL/YCQL grammar",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "keywords": [
     "yugabyte",
     "yugabytedb",
-    "ebny",
+    "ebnf",
     "ysql",
     "ycql"
   ],
