@@ -10,13 +10,13 @@ test:
 server: build
 	java -jar target/*.jar --server --ebnf ./ysql_grammar.ebnf --debug
 
-package:
+package: build
 	rm -f rrdiagram-*.jar
 	cp target/rrdiagram-*.jar .
 	npm pack --pack-destination target
 	rm rrdiagram-*.jar
 
-publish: package
+publish:
 	cd target
 	npm publish yb-rrdiagram*.tgz --access public
 
