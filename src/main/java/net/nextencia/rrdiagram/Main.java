@@ -59,11 +59,6 @@ public class Main {
       return;
     }
 
-    if (!RRDiagramToSVG.isFontInstalled()) {
-      logErr("Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
-      System.exit(1);
-    }
-
     if (args.length > 0 && args[0].equals("--server") ) {
       new Server(args);
       return;
@@ -72,6 +67,11 @@ public class Main {
     if (args.length != 2) {
       System.out.println("Invalid number of arguments");
       printHelpAndExit();
+    }
+
+    if (!RRDiagramToSVG.isFontInstalled()) {
+      logErr("Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
+      System.exit(1);
     }
 
     String inFileName = args[0];
