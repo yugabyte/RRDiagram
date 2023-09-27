@@ -18,14 +18,14 @@ import java.util.Set;
 public class Main {
 
   private static void printHelpAndExit() {
-    System.out.println("Usage: java -jar rrdiagram.jar <input-file.ebnf> <output-folder>");
+    System.out.println("Usage: java -jar rrdiagram.jar --oldformat <input-file.ebnf> <output-folder>");
     System.out.println("Will re-generate contents for each file in the output folder as follows:");
     System.out.println(" - grammar_diagrams.md: reference file with all grammar&diagram for all rules");
     System.out.println(" - *.diagram.md: diagrams for all rules (comma-separated) from file name");
     System.out.println(" - *.grammar.md: grammars for all rules (comma-separated) from file name");
     System.out.println("Other files with non-matching names will be ignored.");
     System.out.println("Example:");
-    System.out.println("  java -jar rrdiagram.jar "
+    System.out.println("  java -jar rrdiagram.jar --oldformat "
                        + "docs/content/latest/api/ysql/syntax_resources/ysql_grammar.ebnf "
                        + "docs/content/latest/api/ysql/syntax_resources/");
     System.out.println("");
@@ -59,23 +59,28 @@ public class Main {
       return;
     }
 
+    if (args.length >=1 && ! args[0].equals("--oldformat")) {
+      System.out.println("[ERROR] first argument should be either --server or --oldformat");
+      printHelpAndExit();
+    }
+
     if (args.length > 0 && args[0].equals("--server") ) {
       new Server(args);
       return;
     }
 
-    if (args.length != 2) {
-      System.out.println("Invalid number of arguments");
+    if (args.length != 3) {
+      System.out.println("[ERROR] Invalid number of arguments");
       printHelpAndExit();
     }
 
     if (!RRDiagramToSVG.isFontInstalled()) {
-      logErr("Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
+      logErr("[ERROR] Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
       System.exit(1);
     }
 
-    String inFileName = args[0];
-    String outFolderName = args[1];
+    String inFileName = args[1];
+    String outFolderName = args[2];
     File outFolder = new File(outFolderName);
 
     FileReader in = new java.io.FileReader(inFileName);

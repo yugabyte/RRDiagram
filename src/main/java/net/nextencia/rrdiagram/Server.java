@@ -102,11 +102,10 @@ class BNFHandler implements HttpHandler {
     // leading ,
     input = input.replaceAll("^,+","");
     // trailing ,
-    input = input.replaceAll(",+","");
+    input = input.replaceAll(",+$","");
     // multiple ,
     input = input.replaceAll(",+",",");
     return input;
-    
   }
 
   public void handleRequest(HttpExchange httpExchange) {
