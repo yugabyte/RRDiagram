@@ -59,14 +59,14 @@ public class Main {
       return;
     }
 
-    if (args.length >=1 && ! args[0].equals("--oldformat")) {
-      System.out.println("[ERROR] first argument should be either --server or --oldformat");
-      printHelpAndExit();
-    }
-
     if (args.length > 0 && args[0].equals("--server") ) {
       new Server(args);
       return;
+    }
+
+    if (args.length >=1 && ! args[0].equals("--oldformat")) {
+      System.out.println("[ERROR] first argument should be either --server or --oldformat");
+      printHelpAndExit();
     }
 
     if (args.length != 3) {
