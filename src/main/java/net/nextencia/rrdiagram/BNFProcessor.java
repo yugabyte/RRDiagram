@@ -33,11 +33,11 @@ class BNFProcessor {
   // get the correct processor
   public static synchronized BNFProcessor get(String api, String version) {
     if (api == null) {
-        api = "ysql";
+      api = "ysql";
     }
     
     if (version == null) {
-        version = "preview";
+      version = "preview";
     }
 
     String key = String.format("%s-%s", api, version);
@@ -165,7 +165,7 @@ class BNFProcessor {
     }
   }
 
-  public String getDiagram(List<Rule> targetRules , List<Rule> localRules, int depth) {
+  public String getDiagram(List<Rule> targetRules, List<Rule> localRules, int depth) {
     StringBuilder sb = new StringBuilder();
     try {
       final Set<String> localRefs = new HashSet<String>();
@@ -222,7 +222,7 @@ class BNFProcessor {
     return ruleNames;
   }
 
-  public void checkGrammar() {
+  void checkGrammar() {
     Set<String> ruleNames = getRuleNames();
 
     for (Rule rule : grammar.getRules()) {

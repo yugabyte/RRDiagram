@@ -18,7 +18,7 @@ To start the diagram server, run `make server.` The service runs on port `1314` 
 
 | Argument | Description |
 | -------- | ----------- |
-| api      |  Language API name. One of - ysql, ycql. Support for ycql will be added soon (Default: ysql) |
+| api      | Language API name. One of - ysql, ycql. Support for ycql will be added soon (Default: ysql) |
 | version  | YB Release version. One of - preview, stable, v2.12, v2.14, v2.16, v2.8. This ensures that the correct EBNF file is looked up for generating Grammar/Diagrams for a specific version. (Default: preview) |
 | mode     | Method to execute. One of - reference, grammar, diagram (Mandatory)<br>- reference: Will return the grammar and diagrams for all the rules in the EBNF (Typically used to generate the reference file, i.e. grammar_diagrams.md)<br>- grammar: Will return diagram definitions in plain text <br>- diagram: Will return the diagram in SVG format |
 | depth    | The depth (wrt to the doc root) at which the generated diagrams/definition will be embedded. This is used to generate the correct relative link to the reference file. (Optional) |
