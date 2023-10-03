@@ -19,7 +19,7 @@ import java.util.HashMap;
 class BNFProcessor {
   static Logger logger = Logger.getLogger(BNFProcessor.class.getName());
 
-  static HashMap<String,BNFProcessor> processors = new HashMap<String,BNFProcessor>();
+  static HashMap<String, BNFProcessor> processors = new HashMap<String, BNFProcessor>();
 
   String api;
   String version;
@@ -35,7 +35,7 @@ class BNFProcessor {
     if (api == null) {
       api = "ysql";
     }
-    
+
     if (version == null) {
       version = "preview";
     }
@@ -44,11 +44,11 @@ class BNFProcessor {
     if (processors.containsKey(key)) {
       return processors.get(key);
     }
-    
+
     // else load the file
     String bnffile = String.format("content/%s/api/%s/syntax_resources/%s_grammar.ebnf", version, api, api);
     File f = new File(bnffile);
-    if (f.exists() && !f.isDirectory()) { 
+    if (f.exists() && !f.isDirectory()) {
       processors.put(key, new BNFProcessor(bnffile, api, version));
       return processors.get(key);
     } else {
@@ -81,17 +81,16 @@ class BNFProcessor {
       checkGrammar();
 
       GrammarToBNF bnf_builder = new GrammarToBNF();
-      GrammarToRRDiagram.RuleLinkProvider ruleLinkProvider =
-        new GrammarToRRDiagram.RuleLinkProvider() {
-          private String toLinkName(String name) {
-            return "../grammar_diagrams#" + name.replaceAll("_", "-");
-          }
+      GrammarToRRDiagram.RuleLinkProvider ruleLinkProvider = new GrammarToRRDiagram.RuleLinkProvider() {
+        private String toLinkName(String name) {
+          return "../grammar_diagrams#" + name.replaceAll("_", "-");
+        }
 
-          @Override
-          public String getLink(String ruleName) {
-            return toLinkName(ruleName);
-          }
-        };
+        @Override
+        public String getLink(String ruleName) {
+          return toLinkName(ruleName);
+        }
+      };
 
       for (Rule rule : grammar.getRules()) {
         try {
@@ -114,7 +113,7 @@ class BNFProcessor {
           throw e;
         }
       }
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
     return sb.toString();
@@ -138,24 +137,36 @@ class BNFProcessor {
 
   String getGlobalPrefix(int depth) {
     /**
-     * This function returns the relative of the grammar_diagrams file to the current .md file
-     * reference file @ content/preview/api/ysql/syntax_resources/grammar_diagrams.md
+     * This function returns the relative of the grammar_diagrams file to the
+     * current .md file
+     * reference file @
+     * content/preview/api/ysql/syntax_resources/grammar_diagrams.md
      * ysql/ycql is at depth 4 (from content)
      */
 
     String path = "";
-    
+
     if (depth < 4) {
       path = "/" + version + "/api/" + api + "/";
     }
 
     // for every level deeper from ysql/ycql, add a ../
-    switch(depth) {
-      case 5: path = "../"; break;
-      case 6: path = "../../"; break;
-      case 7: path = "../../../"; break;
-      case 8: path = "../../../../"; break;
-      case 9: path = "../../../../../"; break;
+    switch (depth) {
+      case 5:
+        path = "../";
+        break;
+      case 6:
+        path = "../../";
+        break;
+      case 7:
+        path = "../../../";
+        break;
+      case 8:
+        path = "../../../../";
+        break;
+      case 9:
+        path = "../../../../../";
+        break;
     }
 
     if (api.equals("ysql")) {
@@ -181,17 +192,16 @@ class BNFProcessor {
       }
 
       String globalPrefix = getGlobalPrefix(depth);
-      GrammarToRRDiagram.RuleLinkProvider ruleLinkProvider =
-        new GrammarToRRDiagram.RuleLinkProvider() {
-          @Override
-          public String getLink(String ruleName) {
-            String linkName = "#" + ruleName.replaceAll("_", "-");
-            if (!localRefs.contains(ruleName)) {
-              linkName = globalPrefix + linkName;
-            }
-            return linkName;
+      GrammarToRRDiagram.RuleLinkProvider ruleLinkProvider = new GrammarToRRDiagram.RuleLinkProvider() {
+        @Override
+        public String getLink(String ruleName) {
+          String linkName = "#" + ruleName.replaceAll("_", "-");
+          if (!localRefs.contains(ruleName)) {
+            linkName = globalPrefix + linkName;
           }
-        };
+          return linkName;
+        }
+      };
 
       for (Rule rule : targetRules) {
         sb.append("#### " + rule.getName());
