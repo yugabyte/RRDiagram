@@ -38,7 +38,7 @@ class Helper {
       outputStream.flush();
       outputStream.close();
       return true;
-    } catch(java.io.IOException e) {
+    } catch (java.io.IOException e) {
       e.printStackTrace(System.out);
       return false;
     }
@@ -55,7 +55,7 @@ class BNFHandler implements HttpHandler {
 
   @Override
   public void handle(HttpExchange httpExchange) throws IOException {
-    if("GET".equals(httpExchange.getRequestMethod())) { 
+    if ("GET".equals(httpExchange.getRequestMethod())) { 
       handleRequest(httpExchange);
     }
   }
@@ -68,7 +68,7 @@ class BNFHandler implements HttpHandler {
        String pairs[] = query.split("[&]");
 
        for (String pair : pairs) {
-        String param[] = pair.split("[=]");
+        String param[] = pair.split("=");
 
         String key = null;
         String value = null;
