@@ -5,7 +5,7 @@
 
     <groupId>net.nextencia</groupId>
     <artifactId>rrdiagram</artifactId>
-    <version>0.9.4-yb-5</version>
+    <version>0.9.4-yb-7</version>
 
     <name>RRDiagram</name>
     <description>
@@ -77,7 +77,7 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar</goal>
+                            <!-- <goal>jar</goal> -->
                         </goals>
                     </execution>
                 </executions>

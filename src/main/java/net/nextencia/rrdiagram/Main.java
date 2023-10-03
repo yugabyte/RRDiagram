@@ -18,33 +18,68 @@ import java.util.Set;
 public class Main {
 
   private static void printHelpAndExit() {
-    System.out.println("Usage: java -jar rrdiagram.jar <input-file.ebnf> <output-folder>");
+    System.out.println("Usage: java -jar rrdiagram.jar --oldformat <input-file.ebnf> <output-folder>");
     System.out.println("Will re-generate contents for each file in the output folder as follows:");
     System.out.println(" - grammar_diagrams.md: reference file with all grammar&diagram for all rules");
     System.out.println(" - *.diagram.md: diagrams for all rules (comma-separated) from file name");
     System.out.println(" - *.grammar.md: grammars for all rules (comma-separated) from file name");
     System.out.println("Other files with non-matching names will be ignored.");
     System.out.println("Example:");
-    System.out.println("  java -jar rrdiagram.jar "
+    System.out.println("  java -jar rrdiagram.jar --oldformat "
                        + "docs/content/latest/api/ysql/syntax_resources/ysql_grammar.ebnf "
                        + "docs/content/latest/api/ysql/syntax_resources/");
+    System.out.println("");
+    System.out.println("Server Mode:");
+    System.out.println("Usage: java -jar rrdiagram.jar --server [--ebnf <input-file.ebnf>] [--debug]");
+    System.out.println("Will run as a http server at localhost:1314/ebnf ");
+    System.out.println("and serves diagrams and grammar as per the request params");
+    System.out.println("Params:");
+    System.out.println(" - api    : Language API name. [ysql, ycql] (Default: ysql)");
+    System.out.println(" - version: YB Release version. To load the correct EBNF for a specific version");
+    System.out.println("            One of - preview, stable, v2.12, v2.14, v2.16, v2.8 ... (Default: preview)");
+    System.out.println(" - mode   : Method to execute. One of - reference, grammar, diagram (Mandatory)");
+    System.out.println("     - reference: Will return the grammar and diagrams for all the rules in the EBNF");
+    System.out.println("     - grammar: Will return diagram definitions in plain text ");
+    System.out.println("     - diagram: Will return the diagram in SVG format");
+    System.out.println(" - depth  : The depth (wrt to the doc root) of the .md file in the");
+    System.out.println("            which the generated diagrams/definition will be embedded.");
+    System.out.println(" - rules  : Comma-separated names of rules for which syntax diagrams or grammar");
+    System.out.println("            need to be generated (eg: rules=select,select_start)");
+    System.out.println(" - local  : Comma-separated names of rules for which the definition will be xref'ed");
+    System.out.println("            to the same page instead of pointing to the definition in the reference file");
+    System.out.println("            (eg: local=select_options)");
+    System.out.flush();
     System.exit(1);
   }
 
   public static void main(String[] args) throws Exception {
 
-    if (args.length != 2) {
-      System.out.println("Invalid number of arguments");
+    if (args.length > 0 && args[0].equals("--help") ) {
+      printHelpAndExit();
+    }
+
+    if (args.length > 0 && args[0].equals("--server")) {
+      new Server(args);
+      return;
+    }
+
+    if (args.length > 0 && !args[0].equals("--oldformat")) {
+      System.out.println("[ERROR] first argument should be either --server or --oldformat");
+      printHelpAndExit();
+    }
+
+    if (args.length != 3) {
+      System.out.println("[ERROR] Invalid number of arguments");
       printHelpAndExit();
     }
 
     if (!RRDiagramToSVG.isFontInstalled()) {
-      logErr("Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
+      logErr("[ERROR] Could not find font: " + RRDiagramToSVG.FONT_FAMILY_NAME);
       System.exit(1);
     }
 
-    String inFileName = args[0];
-    String outFolderName = args[1];
+    String inFileName = args[1];
+    String outFolderName = args[2];
     File outFolder = new File(outFolderName);
 
     FileReader in = new java.io.FileReader(inFileName);
